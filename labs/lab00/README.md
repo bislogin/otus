@@ -27,20 +27,20 @@
     <tbody>
         <tr>
 			<td align="center">R1</td>
-			<td align="center">G0/0/1.3</td>
+			<td align="center">G0/0.3</td>
 			<td align="center">192.168.3.1</td>
 			<td align="center">255.255.255.0</td>
             <td rowspan=3 align="center">N/A</td>
         </tr>
         <tr>
             <td align="center"> </td>
-			<td align="center">G0/0/1.4</td>
+			<td align="center">G0/0.4</td>
 			<td align="center">192.168.4.1</td>
 			<td align="center">255.255.255.0</td>
         </tr>
 		<tr>
             <td align="center"> </td>
-			<td align="center">G0/0/1.8	</td>
+			<td align="center">G0/0.8	</td>
 			<td align="center">N/A</td>
 			<td align="center">N/A</td>
         </tr>
