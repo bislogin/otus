@@ -89,4 +89,6 @@ j.	Set the clock on the switch.
 k.	Copy the running configuration to the startup configuration.
 > S1(config)#do wr  
 
+#### Шаг 4: Настройка хостов ПК.
+
 
