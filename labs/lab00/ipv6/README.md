@@ -22,14 +22,14 @@
 			<td align="center">R1</td>
 			<td align="center">G0/0.3</td>
 			<td align="center">fc0::3:1</td>
-			<td align="center">118</td>
+			<td align="center">64</td>
             <td rowspan=3 align="center">N/A</td>
         </tr>
         <tr>
             <td align="center"> </td>
 			<td align="center">G0/0.4</td>
 			<td align="center">fc0::4:1</td>
-			<td align="center">118</td>
+			<td align="center">64</td>
         </tr>
 		<tr>
             <td align="center"> </td>
@@ -41,28 +41,28 @@
 			<td align="center">S1</td>
 			<td align="center">VLAN 3</td>
 			<td align="center">fc0::3:11</td>
-			<td align="center">118</td>
+			<td align="center">64</td>
             <td align="center">fc0::3:1</td>
         </tr>
         <tr>
 			<td align="center">S2</td>
 			<td align="center">VLAN 3</td>
 			<td align="center">fc0::3:12</td>
-			<td align="center">118</td>
+			<td align="center">64</td>
             <td align="center">fc0::3:1</td>
         </tr>
         <tr>
 			<td align="center">PC-A</td>
 			<td align="center">NIC</td>
 			<td align="center">fc0::3:3</td>
-			<td align="center">118</td>
+			<td align="center">64</td>
             <td align="center">fc0::3:1</td>
         </tr>
         <tr>
 			<td align="center">PC-B</td>
 			<td align="center">NIC</td>
 			<td align="center">fc0::4:3</td>
-			<td align="center">118</td>
+			<td align="center">64</td>
             <td align="center">fc0::4:1</td>
         </tr>
     </tbody>
@@ -200,5 +200,44 @@ k.	Copy the running configuration to the startup configuration.
 
 #### Шаг 4: Настройка хостов ПК.
 
+> VPCS> ip fc0::3:3/64 fc0::3:1  
+> PC1 : fc0::3:3/64
 
 
+> VPCS> ip fc0::4:3/64 fc0::4:1  
+> PC1 : fc0::4:3/64  
+
+
+### Часть 2: Создание виртуальных сетей и назначение портов коммутатора
+
+В части 2 мы создадим виртуальные сети, как указано в таблице на обоих коммутаторах. Затем назначим виртуальные сети соответствующему интерфейсу.
+
+#### Шаг 1: Создаим виртуальные сети на обоих коммутаторах.
+
+a.	Create and name the required VLANs on each switch from the table above.
+> S1(config)#vlan 3  
+> S1(config-vlan)#name Management  
+> S1(config-vlan)#vlan 4           
+> S1(config-vlan)#name Operations  
+> S1(config-vlan)#vlan 7           
+> S1(config-vlan)#name ParkingLot  
+> S1(config-vlan)#vlan 8           
+> S1(config-vlan)#name Native     
+
+b.	Configure the management interface and default gateway on each switch using the IP address information in the Addressing Table. 
+> S1(config)#int vlan 3  
+> S1(config-if)#ip address 192.168.3.11 255.255.255.0  
+> S1(config-if)#no shutdown  
+
+> S2(config)#int vlan 3  
+> S2(config-if)#ip address 192.168.3.12 255.255.255.0  
+> S2(config-if)#no shutdown  
+
+c.	Assign all unused ports on both switches to the ParkingLot VLAN, configure them for static access mode, and administratively deactivate them.
+> S1(config)#int range gi0/3, gi1/0-3   
+> S1(config-if-range)#switchport mode access   
+> S1(config-if-range)#switchport access vlan 7  
+
+> S2(config)#int range gi0/2-3, gi1/0-3     
+> S2(config-if-range)#switchport mode access   
+> S2(config-if-range)#switchport access vlan 7  
