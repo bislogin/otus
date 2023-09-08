@@ -121,10 +121,12 @@ a.	Create and name the required VLANs on each switch from the table above.
 
 b.	Configure the management interface and default gateway on each switch using the IP address information in the Addressing Table. 
 > S1(config)#int vlan 3  
-> S1(config-if)#ip address 192.168.3.11 255.255.255.0
+> S1(config-if)#ip address 192.168.3.11 255.255.255.0  
+> S1(config-if)#no shutdown  
 
 > S2(config)#int vlan 3  
-> S2(config-if)#ip address 192.168.3.12 255.255.255.0
+> S2(config-if)#ip address 192.168.3.12 255.255.255.0  
+> S2(config-if)#no shutdown  
 
 c.	Assign all unused ports on both switches to the ParkingLot VLAN, configure them for static access mode, and administratively deactivate them.
 > S1(config)#int range gi0/3, gi1/0-3   
@@ -138,12 +140,101 @@ c.	Assign all unused ports on both switches to the ParkingLot VLAN, configure th
 #### Шаг 2: Назнаим VLAN правильным интерфейсам коммутатора.
 
 a.	Assign used ports to the appropriate VLAN (specified in the VLAN table above) and configure them for static access mode. Be sure to do this on both switches
+> S1(config)#int gi0/2  
+> S1(config-if)#switchport mode access   
+> S1(config-if)#switchport access vlan 3
 
+> S2(config-if)#int gi0/0                 
+> S2(config-if)#switchport mode access   
+> S2(config-if)#switchport access vlan 4  
 
 b.	Issue the show vlan brief command and verify that the VLANs are assigned to the correct interfaces.
+![Alt text](https://github.com/bislogin/otus/blob/main/labs/lab00/ipv4/image.png)
+
+![Alt text](https://github.com/bislogin/otus/blob/main/labs/lab00/ipv4/vlan%20br%20s2.png)
+
+### Часть 3: Настройка магистрали 802.1Q между коммутаторами
+
+#### Шаг 1: Вручную настроим магистральный интерфейс Gi0/1.
+
+a.	Change the switchport mode on interface Gi0/1 to force trunking. Make sure to do this on both switches.
+> S1(config)#int gi0/1  
+> S1(config-if)#switchport trunk encapsulation dot1q   
+> S1(config-if)#switchport mode trunk   
+
+b.	As a part of the trunk configuration, set the native VLAN to 8 on both switches. You may see error messages temporarily while the two interfaces are configured for different native VLANs.
+> S1(config-if)#switchport trunk native vlan 8  
+
+c.	As another part of trunk configuration, specify that VLANs 3, 4, and 8 are only allowed to cross the trunk.
+> S1(config-if)#switchport trunk allowed vlan 3,4,8
+
+d.	Issue the show interfaces trunk command to verify trunking ports, the Native VLAN and allowed VLANs across the trunk.
+![Alt text](https://github.com/bislogin/otus/blob/main/labs/lab00/ipv4/tr%20s1.png)
+
+![Alt text](https://github.com/bislogin/otus/blob/main/labs/lab00/ipv4/tr%20s2.png)
+
+#### Шаг 2: Вручную настройте магистральный интерфейс S1 Gi0/0
+
+a.	Configure the Gi0/0 on S1 with the same trunk parameters as Gi0/1. This is the trunk to the router.
+> S1(config)#int gi0/0  
+> S1(config-if)#switchport trunk encapsulation dot1q   
+> S1(config-if)#switchport mode trunk   
+> S1(config-if)#switchport trunk allowed vlan 3,4,8  
+> S1(config-if)#switchport trunk native vlan 8  
+
+b.	Save the running configuration to the startup configuration file on S1 and S2.
+> S1#wr  
+
+c.	Issue the show interfaces trunk command to verify trunking.
+
+![Alt text](https://github.com/bislogin/otus/blob/main/labs/lab00/ipv4/sh%20ip%20int%20br%202.png)
+
+### Часть 4: Настроим маршрутизацию между VLAN на маршрутизаторе
+
+a.	Activate interface G0/0 on the router.
+> R1(config)#int gi0/0  
+> R1(config-if)#no shutdown   
+
+b.	Configure sub-interfaces for each VLAN as specified in the IP addressing table. All sub-interfaces use 802.1Q encapsulation. Ensure the sub-interface for the native VLAN does not have an IP address assigned. Include a description for each sub-interface.
+
+> R1(config)#int gi0/0.3  
+> R1(config-subif)#description Management  
+> R1(config-subif)#encapsulation dot1Q 3  
+> R1(config-subif)#ip address 192.168.3.1 255.255.255.0  
+> R1(config-subif)#int gi0/0.4             
+> R1(config-subif)#description Operations  
+> R1(config-subif)#encapsulation dot1Q 4   
+> R1(config-subif)#ip address 192.168.3.1 255.255.255.0  
+> R1(config-subif)#int gi0/0.8             
+> R1(config-subif)#description Native      
+> R1(config-subif)#encapsulation dot1Q 8  
+
+c.	Use the show ip interface brief command to verify the sub-interfaces are operational.
+
+![Alt text](https://github.com/bislogin/otus/blob/main/labs/lab00/ipv4/sh%20ip%20int%20br.png)
 
 
+### Часть 5: Убедимся, что маршрутизация между VLAN работает
 
+#### Шаг 1: Выполним следующие тесты с помощью PC-A. Все должно быть успешно.
 
+a.	Ping from PC-A to its default gateway.
 
+![Alt text](https://github.com/bislogin/otus/blob/main/labs/lab00/ipv4/ping%20gw.png)
 
+b.	Ping from PC-A to PC-B
+
+![Alt text](https://github.com/bislogin/otus/blob/main/labs/lab00/ipv4/ping%20pc1%20to%20pc2.png)
+
+c.	Ping from PC-A to S2
+
+![Alt text](https://github.com/bislogin/otus/blob/main/labs/lab00/ipv4/ping%20pc1%20to%20s2.png)
+
+#### Шаг 2: Выполните следующий тест с помощью PC-B
+
+From the command prompt on PC-B, issue the tracert command to the address of PC-A.
+
+![Alt text](https://github.com/bislogin/otus/blob/main/labs/lab00/ipv4/trace%20pc2%20to%20pc1.png)
+
+В трассировке отображается промежуточный адрес 192.168.4.1  
+Это саб интерфейс на S1 Gi0/0.4 
