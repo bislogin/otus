@@ -89,7 +89,7 @@
         <tr>
 			<td rowspan=3 align="left">3</td>
 			<td rowspan=3 align="left">Management</td>
-			<td align="center">S1: VLAN 3</td>
+			<td align="left">S1: VLAN 3</td>
         </tr>
         <tr>
 			<td align="left">S2: VLAN 3</td>
