@@ -11,7 +11,12 @@ R1(config)#no ip domain lookup
 R1(config)#enable secret class   
 R1(config)#line console 0  
 R1(config-line)#password cisco  
+R1(config-line)#login    
+R1(config-line)#logging synchronous  
 R1(config)#line vty 0 4  
 R1(config-line)#password cisco  
 R1(config-line)#login  
+R1(config-line)#logging synchronous  
 R1(config)#service password-encryption   
+R1(config)#Banner motd "This is a secure system. Authorized Access Only!"  
+R1(config)# do wr  
