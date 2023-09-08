@@ -95,20 +95,20 @@
 			<td align="left">S2: VLAN 3</td>
         </tr>
         <tr>
-			<td align="left">S1: F0/6</td>
+			<td align="left">S1: Gi0/2</td>
         </tr>
 		<tr>
             <td align="left">4 </td>
 			<td align="left">Operations	</td>
-			<td align="left">S2: F0/18</td>
+			<td align="left">S2: Gi0/0</td>
         </tr>
         <tr>
 			<td rowspan=2 align="left">7</td>
 			<td rowspan=2 align="left">ParkingLot</td>
-			<td align="left">S1: F0/2-4, F0/7-24, G0/1-2 </td>
+			<td align="left">S1: Gi0/3, G1/0-3 </td>
         </tr>
         <tr>
-			<td align="left">S2: F0/2-17, F0/19-24, G0/1-2 </td>
+			<td align="left">S2: G0/2-3, G1/0-3 </td>
         </tr>
         <tr>
 			<td align="left">8</td>
