@@ -91,4 +91,13 @@ k.	Copy the running configuration to the startup configuration.
 
 #### Шаг 4: Настройка хостов ПК.
 
+> VPCS> ip 192.168.3.3/24 192.168.3.1  
+> Checking for duplicate address...  
+> VPCS : 192.168.3.3 255.255.255.0 gateway 192.168.3.1
+
+
+> VPCS> ip 192.168.4.3/24 192.168.4.1  
+> Checking for duplicate address...  
+> VPCS : 192.168.4.3 255.255.255.0 gateway 192.168.4.1
+
 
