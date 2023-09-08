@@ -230,7 +230,7 @@ c.	Ping from PC-A to S2
 
 ![Alt text](https://github.com/bislogin/otus/blob/main/labs/lab00/ipv4/ping%20pc1%20to%20s2.png)
 
-#### Шаг 2: Выполните следующий тест с помощью PC-B
+#### Шаг 2: Выполним следующий тест с помощью PC-B
 
 From the command prompt on PC-B, issue the tracert command to the address of PC-A.
 
