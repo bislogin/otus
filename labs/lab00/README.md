@@ -105,10 +105,10 @@
         <tr>
 			<td rowspan=2 align="left">7</td>
 			<td rowspan=2 align="left">ParkingLot</td>
-			<td align="left">S1: Gi0/3, G1/0-3 </td>
+			<td align="left">S1: Gi0/3, Gi1/0-3 </td>
         </tr>
         <tr>
-			<td align="left">S2: G0/2-3, G1/0-3 </td>
+			<td align="left">S2: G0/2-3, Gi1/0-3 </td>
         </tr>
         <tr>
 			<td align="left">8</td>
