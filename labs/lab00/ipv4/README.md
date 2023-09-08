@@ -1,5 +1,7 @@
 ### Часть 1: Построение сети и настройка основных параметров устройства
 
+В части 1 мы настроим топологию сети и основные параметры на узлах ПК и коммутаторах.
+
 #### Шаг 1: Подключение сети, как показано в топологии.
 ![Alt text](https://github.com/bislogin/otus/blob/main/labs/lab00/ipv4/%D0%91%D0%B5%D0%B7%D1%8B%D0%BC%D1%8F%D0%BD%D0%BD%D1%8B%D0%B9.png)
 
@@ -99,5 +101,21 @@ k.	Copy the running configuration to the startup configuration.
 > VPCS> ip 192.168.4.3/24 192.168.4.1  
 > Checking for duplicate address...  
 > VPCS : 192.168.4.3 255.255.255.0 gateway 192.168.4.1
+
+
+### Часть 2: Создание виртуальных сетей и назначение портов коммутатора
+
+В части 2 мы создадим виртуальные сети, как указано в таблице на обоих коммутаторах. Затем назначим виртуальные сети соответствующему интерфейсу.
+
+#### Шаг 1: Создать виртуальные сети на обоих коммутаторах.
+
+a.	Create and name the required VLANs on each switch from the table above.
+
+
+b.	Configure the management interface and default gateway on each switch using the IP address information in the Addressing Table. 
+
+
+c.	Assign all unused ports on both switches to the ParkingLot VLAN, configure them for static access mode, and administratively deactivate them.
+
 
 
