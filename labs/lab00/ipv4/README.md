@@ -107,15 +107,43 @@ k.	Copy the running configuration to the startup configuration.
 
 В части 2 мы создадим виртуальные сети, как указано в таблице на обоих коммутаторах. Затем назначим виртуальные сети соответствующему интерфейсу.
 
-#### Шаг 1: Создать виртуальные сети на обоих коммутаторах.
+#### Шаг 1: Создаим виртуальные сети на обоих коммутаторах.
 
 a.	Create and name the required VLANs on each switch from the table above.
-
+> S1(config)#vlan 3  
+> S1(config-vlan)#name Management  
+> S1(config-vlan)#vlan 4           
+> S1(config-vlan)#name Operations  
+> S1(config-vlan)#vlan 7           
+> S1(config-vlan)#name ParkingLot  
+> S1(config-vlan)#vlan 8           
+> S1(config-vlan)#name Native     
 
 b.	Configure the management interface and default gateway on each switch using the IP address information in the Addressing Table. 
+> S1(config)#int vlan 3  
+> S1(config-if)#ip address 192.168.3.11 255.255.255.0
 
+> S2(config)#int vlan 3  
+> S2(config-if)#ip address 192.168.3.12 255.255.255.0
 
 c.	Assign all unused ports on both switches to the ParkingLot VLAN, configure them for static access mode, and administratively deactivate them.
+> S1(config)#int range gi0/3, gi1/0-3   
+> S1(config-if-range)#switchport mode access   
+> S1(config-if-range)#switchport access vlan 7  
+
+> S2(config)#int range gi0/2-3, gi1/0-3     
+> S2(config-if-range)#switchport mode access   
+> S2(config-if-range)#switchport access vlan 7  
+
+#### Шаг 2: Назнаим VLAN правильным интерфейсам коммутатора.
+
+a.	Assign used ports to the appropriate VLAN (specified in the VLAN table above) and configure them for static access mode. Be sure to do this on both switches
+
+
+b.	Issue the show vlan brief command and verify that the VLANs are assigned to the correct interfaces.
+
+
+
 
 
 
