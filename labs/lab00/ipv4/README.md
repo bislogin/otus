@@ -207,7 +207,7 @@ b.	Configure sub-interfaces for each VLAN as specified in the IP addressing tabl
 > R1(config-subif)#ip address 192.168.3.1 255.255.255.0  
 > R1(config-subif)#int gi0/0.8             
 > R1(config-subif)#description Native      
-> R1(config-subif)#encapsulation dot1Q 8  
+> R1(config-subif)#encapsulation dot1Q 8 native   
 
 c.	Use the show ip interface brief command to verify the sub-interfaces are operational.
 
