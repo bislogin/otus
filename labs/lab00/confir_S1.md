@@ -74,7 +74,7 @@ interface GigabitEthernet0/0.4
 !  
 interface GigabitEthernet0/0.8  
  description Native  
- encapsulation dot1Q 8  
+ encapsulation dot1Q 8 native    
 !  
 interface GigabitEthernet0/1  
  no ip address  
