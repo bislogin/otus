@@ -4,5 +4,5 @@
 
 #### Шаг 1: Подключение сети, как показано в топологии.
 
-![Alt text]()
+![Alt text](https://github.com/bislogin/otus/blob/main/labs/lab01/ipv4/photo_2023-09-16_10-55-54.jpg)
 
