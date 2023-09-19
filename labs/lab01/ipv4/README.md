@@ -11,41 +11,56 @@
 ##### Шаг 3:	Настройте базовые параметры каждого коммутатора.
 
 a.	Отключим поиск DNS.
-> Switch>en  
-> Switch#conf t  
-> Enter configuration commands, one per line.  End with CNTL/Z.  
-> Switch(config)#no ip domain-lookup  
-
+```
+ Switch>en  
+ Switch#conf t  
+ Enter configuration commands, one per line.  End with CNTL/Z.  
+ Switch(config)#no ip domain-lookup    
+```
 b.	Присвоим имена устройствам в соответствии с топологией.
-> Switch(config)#hostname S1  
+```
+Switch(config)#hostname S1  
+```
 
 c.	Назначим class в качестве зашифрованного пароля доступа к привилегированному режиму.
-> S1(config)#enable secret class  
+```
+S1(config)#enable secret class  
+```
 
 d.	Назначем cisco в качестве паролей консоли и VTY и активируйте вход для консоли и VTY каналов.
-> S1(config)#line con 0  
-> S1(config-line)#password cisco  
-> S1(config-line)#login  
-> S1(config-line)#logging synchronous   
+```
+S1(config)#line con 0  
+S1(config-line)#password cisco  
+S1(config-line)#login  
+S1(config-line)#logging synchronous   
+```
 
-> S1(config-line)#line vty 0 4  
-> S1(config-line)#password cisco    
-> S1(config-line)#login  
-> S1(config-line)#logging synchronous   
+```
+S1(config-line)#line vty 0 4  
+S1(config-line)#password cisco    
+S1(config-line)#login  
+S1(config-line)#logging synchronous   
+```
 
 e.	Настроим баннерное сообщение дня (MOTD) для предупреждения пользователей о запрете несанкционированного доступа.
-> S1(config)#Banner motd "This is a secure system. Authorized Access Only!"  
+```
+S1(config)#Banner motd "This is a secure system. Authorized Access Only!"  
+```
 
 f.	Зададим IP-адрес, указанный в таблице адресации для VLAN 1 на всех коммутаторах.
-> S1(config)#int vlan 1  
-> S1(config-if)#ip address 192.168.1.1 255.255.255.0
-> S1(config-if)#no shutdown  
+```
+S1(config)#int vlan 1  
+S1(config-if)#ip address 192.168.1.1 255.255.255.0
+S1(config-if)#no shutdown  
+```
 
 g.	Скопируйте текущую конфигурацию в файл загрузочной конфигурации.
-> S1#wr  
-> Building configuration...  
-> Compressed configuration from 3244 bytes to 1619 bytes[OK]  
-> S1#  
+```
+S1#wr  
+Building configuration...  
+Compressed configuration from 3244 bytes to 1619 bytes[OK]  
+S1#  
+```
 
 #### Шаг 4:	Проверим связь.
 
@@ -67,28 +82,42 @@ g.	Скопируйте текущую конфигурацию в файл за
 Процесс выбора определяет, какой из коммутаторов станет корневым мостом. Коммутатор с наименьшим значением идентификатора моста (BID) становится корневым мостом. Идентификатор BID состоит из значения приоритета моста, расширенного идентификатора системы и MAC-адреса коммутатора. Значение приоритета может находиться в диапазоне от 0 до 65535 с шагом 4096. По умолчанию используется значение 32768.
 
 #### Шаг 1:	Отключим все порты на коммутаторах.
-> S1(config)#int range gi0/0-1, gi1/0-1  
-> S1(config-if-range)#shutdown
+```
+S1(config)#int range gi0/0-1, gi1/0-1  
+S1(config-if-range)#shutdown
+```
 
-> S2(config)#int range gi0/0-3  
-> S2(config-if-range)#shutdown
+```
+S2(config)#int range gi0/0-3  
+S2(config-if-range)#shutdown
+```
 
-> S3(config)#int range gi0/2-3, gi1/0-1  
-> S3(config-if-range)#shutdown   
+```
+S3(config)#int range gi0/2-3, gi1/0-1  
+S3(config-if-range)#shutdown   
+```
 
 #### Шаг 2:	Настроим подключенные порты в качестве транковых.
-> S1(config-if-range)#switchport trunk encapsulation dot1q   
-> S1(config-if-range)#switchport mode trunk   
+```
+S1(config-if-range)#switchport trunk encapsulation dot1q   
+S1(config-if-range)#switchport mode trunk   
+```
 
 #### Шаг 3:	Включим по одному линку на всех коммутаторах.
-> S1(config)#int range gi0/0, gi1/0  
-> S1(config-if-range)#no shutdown  
+```
+S1(config)#int range gi0/0, gi1/0  
+S1(config-if-range)#no shutdown  
+```
 
-> S2(config)#int range gi0/0, gi0/2                 
-> S2(config-if-range)#no shutdown  
+```
+S2(config)#int range gi0/0, gi0/2                 
+S2(config-if-range)#no shutdown  
+```
 
-> S3(config)#int range gi0/2, gi1/0  
-> S3(config-if-range)#no shutdown  
+```
+S3(config)#int range gi0/2, gi1/0  
+S3(config-if-range)#no shutdown  
+```
 
 #### Шаг 4:	Отобразим данные протокола spanning-tree.
 Введем команду show spanning-tree на всех трех коммутаторах. 
@@ -145,8 +174,10 @@ Gi0/2 Altn BLK
 
 #### Шаг 2:	Изменим стоимость порта.
 Помимо заблокированного порта, единственным активным портом на этом коммутаторе является порт, выделенный в качестве порта корневого моста. Уменьшите стоимость этого порта корневого моста до 18, выполнив команду spanning-tree cost 3 режима конфигурации интерфейса.
-> S3(config)# interface gi1/0  
-> S3(config-if)# spanning-tree cost 3  
+```
+S3(config)# interface gi1/0  
+S3(config-if)# spanning-tree cost 3  
+```
 
 #### Шаг 3:	Просмотрим изменения протокола spanning-tree.
 Повторно выполните команду show spanning-tree на обоих коммутаторах некорневого моста.   
@@ -162,8 +193,10 @@ S3
 #### Шаг 4:	Удалите изменения стоимости порта.  
 
 a.	Выполните команду no spanning-tree cost 3 режима конфигурации интерфейса, чтобы удалить запись стоимости, созданную ранее.
-> S3(config)# interface gi1/0  
-> S3(config-if)# no spanning-tree cost 3
+```
+S3(config)# interface gi1/0  
+S3(config-if)# no spanning-tree cost 3
+```
 
 b.	Повторно выполните команду show spanning-tree, чтобы подтвердить, что протокол STP сбросил порт на коммутаторе некорневого моста, вернув исходные настройки порта. Протоколу STP требуется примерно 30 секунд, чтобы завершить процесс перевода порта.
 
@@ -176,14 +209,20 @@ b.	Повторно выполните команду show spanning-tree, что
 Если стоимости портов равны, процесс сравнивает BID. Если BID равны, для определения корневого моста используются приоритеты портов. Значение приоритета по умолчанию — 128. STP объединяет приоритет порта с номером порта, чтобы разорвать связи. Наиболее низкие значения являются предпочтительными. В части 4 нам предстоит активировать избыточные пути до каждого из коммутаторов, чтобы просмотреть, каким образом протокол STP выбирает порт с учетом приоритета портов.
 
 a.	Включите все порты на всех коммутаторах.
-> S1(config)# int range Gi0/1, Gi1/1  
-> S1(config-if-range)#no shutdown
+```
+S1(config)# int range Gi0/1, Gi1/1  
+S1(config-if-range)#no shutdown
+```
 
-> S2(config)#int range Gi0/1, Gi0/3   
-> S2(config-if-range)#no shutdown   
+```
+S2(config)#int range Gi0/1, Gi0/3   
+S2(config-if-range)#no shutdown   
+```
 
-> S3(config)#int range Gi0/3, Gi1/1  
-> S3(config-if-range)#no shutdown
+```
+S3(config)#int range Gi0/3, Gi1/1  
+S3(config-if-range)#no shutdown
+```
 
 b.	Подождите 30 секунд, чтобы протокол STP завершил процесс перевода порта, после чего выполните команду show spanning-tree на коммутаторах некорневого моста. Обратите внимание, что порт корневого моста переместился на порт с меньшим номером, связанный с коммутатором корневого моста, и заблокировал предыдущий порт корневого моста.
 
