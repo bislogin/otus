@@ -31,13 +31,13 @@
         </tr>
 	    	<tr>
 			      <td align="left">Gi0/1.100	</td>
-			      <td align="left"> </td>
-			      <td align="left"> </td>
+			      <td align="left">192.168.1.1 </td>
+			      <td align="left">255.255.255.192 </td>
         </tr>
       	<tr>
 			      <td align="left">Gi0/1.200	</td>
-			      <td align="left"> </td>
-			      <td align="left"> </td>
+			      <td align="left">192.168.1.65 </td>
+			      <td align="left">255.255.255.224 </td>
         </tr>
 	    	<tr>
 			      <td align="left">Gi0/1.1000	</td>
@@ -53,15 +53,15 @@
         </tr>
       	<tr>
 			      <td align="left">Gi0/1</td>
-			      <td align="left"> </td>
-			      <td align="left"> </td>
+			      <td align="left">192.168.1.97 </td>
+			      <td align="left">255.255.255.240 </td>
         </tr>
         <tr>
 			      <td align="left">S1</td>
 	      		<td align="left">VLAN 200</td>
-	      		<td align="left"> </td>
-		      	<td align="left"> </td>
-            <td align="left"> </td>
+	      		<td align="left">192.168.1.66 </td>
+		      	<td align="left">255.255.255.224 </td>
+            <td align="left">192.168.1.65 </td>
         </tr>
         <tr>
 			      <td align="left">S2</td>
