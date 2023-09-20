@@ -3,6 +3,22 @@ Part 1: Build the Network and Configure Basic Device Settings
 Part 2: Configure and verify two DHCPv4 Servers on R1  
 Part 3: Configure and verify a DHCP Relay on R2  
 
-#### Part 1: Build the Network and Configure Basic Device Settings
-In Part 1, you will set up the network topology and configure basic settings on the PC hosts and switches.
+#### Часть 1:  Построение сети и настройка основных параметров устройства
+В части 1 мы настроим топологию сети и основные параметры на узлах ПК и коммутаторах.
 
+![Alt text](https://github.com/bislogin/otus/blob/main/labs/lab02/topology1.png)  
+
+##### Шаг 1: Создадим схему адресации  
+
+Назначим сеть 192.168.1.0/24, чтобы она отвечала следующим требованиям:  
+a. Одна подсеть, “Подсеть A”, поддерживающая 58 хостов (клиентская VLAN на R1).  
+Подсеть A:
+`192.168.1.0/26`
+
+b. Одна подсеть, “Подсеть B”, поддерживающая 28 хостов (управляющая VLAN на R1).   
+Подсеть B:
+`192.168.1.64/27`
+
+c. Одна подсеть, “Подсеть C”, поддерживающая 12 хостов (клиентская сеть на R2).  
+Подсеть C: 
+`192.168.1.96/28`
