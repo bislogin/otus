@@ -155,12 +155,12 @@
         <tr>
 		<td align="left">1</td>
 		<td align="left">N/A</td>
-		<td align="left">S2: F0/18</td>
+		<td align="left">S2: Gi0/0</td>
         </tr>
         <tr>
 		<td align="left">100</td>
 		<td align="left">Clients</td>
-		<td align="left">S1: F0/6</td>
+		<td align="left">S1: Gi0/0</td>
         </tr>
         <tr>
 		<td align="left">200</td>
