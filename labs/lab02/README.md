@@ -170,7 +170,7 @@
         <tr>
 		<td align="left">999</td>
 		<td align="left">Parking_Lot</td>
-		<td align="left">S1: F0/1-4, F0/7-24, G0/1-2</td>
+		<td align="left">S1: Gi0/2-3</td>
         </tr>
         <tr>
 		<td align="left">1000</td>
