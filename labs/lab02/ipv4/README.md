@@ -243,7 +243,7 @@ R1(dhcp-config)#default-router 192.168.1.97
 R1(dhcp-config)#domain-name ccna-lab.com
 R1(dhcp-config)#lease 2 12 30
 ```
-##### Шаг 2: Сохраниим вашу конфигурацию   
+##### Шаг 2: Сохраним конфигурацию   
 
 ```
 R1(dhcp-config)#do wr
