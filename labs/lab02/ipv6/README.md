@@ -127,3 +127,81 @@ MTU:              : 1500
 
 Обратим внимание, что первичный DNS-суффикс отсутствует.   
 
+##### Шаг 2: Настройка R1 для предоставления DHCPv6 без сохранения состояния для PC-A   
+
+```
+R1(config)#ipv6 dhcp pool R1-STATELESS 
+R1(config-dhcpv6)#dns-server 2001:db8:acad::1
+R1(config-dhcpv6)#domain-name stateless.com
+R1(config-dhcpv6)#int gi0/1
+R1(config-if)#ipv6 nd other-config-flag
+R1(config-if)#ipv6 dhcp server R1-STATELESS
+R1(config-if)#do wr
+Building configuration...
+[OK]
+```
+
+Проверить настройки на VPCS нет возмодности. Проверка доступности Gi0/1 на R2:
+```
+VPCS> ping 2001:db8:acad:3::1
+
+2001:db8:acad:3::1 icmp6_seq=1 ttl=63 time=12.533 ms
+2001:db8:acad:3::1 icmp6_seq=2 ttl=63 time=1.894 ms
+2001:db8:acad:3::1 icmp6_seq=3 ttl=63 time=1.745 ms
+2001:db8:acad:3::1 icmp6_seq=4 ttl=63 time=2.213 ms
+2001:db8:acad:3::1 icmp6_seq=5 ttl=63 time=1.866 ms
+```
+
+#### Часть 4: Настройка DHCPv6-сервера с отслеживанием состояния на R1   
+
+```
+R1(config)#ipv6 dhcp pool R2-STATEFUL                          
+R1(config-dhcpv6)#address prefix 2001:db8:acad:3:aaa::/80
+R1(config-dhcpv6)#dns-server 2001:db8:acad::254
+R1(config-dhcpv6)#domain-name STATEFUL.com
+R1(config-dhcpv6)#int gi0/0
+R1(config-if)#ipv6 dhcp server R2-STATEFUL
+R1(config-if)#do wr
+Building configuration...
+[OK]
+```
+
+#### Часть 5: Настройка и проверка реле DHCPv6 на R2.   
+
+В части 5 вы настроим и проверим ретрансляцию DHCPv6 на R2, что позволит PC-B получать IPv6-адрес.   
+
+##### Шаг 1: Включим PC-B и проверьте адрес SLAAC, который он генерирует.   
+```
+VPCS> ip auto
+GLOBAL SCOPE      : 2001:db8:acad:3:2050:79ff:fe66:6811/64
+ROUTER LINK-LAYER : 50:00:00:15:00:01
+
+VPCS>
+```
+
+##### Шаг 2: Настроим R2 в качестве агента ретрансляции DHCP для локальной сети на G0/0/1.
+
+```
+R2(config)#int gi0/1
+R2(config-if)#ipv6 nd managed-config-flag
+R2(config-if)#ipv6 dhcp relay destination 2001:db8:acad:2::1 g0/0  
+R2(config-if)#do wr
+Building configuration...
+[OK]
+```
+
+##### Шаг 3: Попытаемся получить IPv6-адрес из DHCPv6 на PC-B.
+
+К сожалению VPCS так не умеет(
+
+Проверим доступность Gi0/1 на R1
+
+```
+VPCS> ping 2001:db8:acad:1::1
+
+2001:db8:acad:1::1 icmp6_seq=1 ttl=63 time=6.165 ms
+2001:db8:acad:1::1 icmp6_seq=2 ttl=63 time=1.843 ms
+2001:db8:acad:1::1 icmp6_seq=3 ttl=63 time=2.056 ms
+2001:db8:acad:1::1 icmp6_seq=4 ttl=63 time=2.133 ms
+2001:db8:acad:1::1 icmp6_seq=5 ttl=63 time=1.715 ms
+```
