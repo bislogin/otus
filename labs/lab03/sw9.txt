@@ -1,0 +1,142 @@
+Building configuration...
+
+Current configuration : 2220 bytes
+!
+! Last configuration change at 17:12:24 MSK Mon Oct 16 2023
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service compress-config
+!
+hostname SW9
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$/AZa$9bMzeybHbyQ9F3TqjHTRh1
+!
+no aaa new-model
+clock timezone MSK 3 0
+!
+!
+!         
+!
+!
+!
+!
+!
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+!
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+! 
+!
+!
+!
+!
+!
+!         
+!         
+!
+!
+!
+!
+interface Loopback0
+ description == FOR MGMT == 
+ ip address 10.20.0.5 255.255.255.255
+ ipv6 address FE80::5 link-local
+ ipv6 address 2001:BBBB::5/127
+ ipv6 enable
+!
+interface Ethernet0/0
+ description == link to SW10 == 
+ no switchport
+ ip address 10.20.0.114 255.255.255.254
+ duplex auto
+ ipv6 address FE80::72 link-local
+ ipv6 address 2001:BBBB::72/127
+ ipv6 enable
+!
+interface Ethernet0/1
+ description == link to SW10 == 
+ no switchport
+ ip address 10.20.0.116 255.255.255.254
+ duplex auto
+ ipv6 address FE80::74 link-local
+ ipv6 address 2001:BBBB::7/127
+ ipv6 enable
+!
+interface Ethernet0/2
+ description == FOR VPC ==
+ switchport access vlan 80
+ switchport mode access
+ spanning-tree portfast
+!
+interface Ethernet0/3
+ description == link to R17 == 
+ no switchport
+ ip address 10.20.0.109 255.255.255.254
+ duplex auto
+ ipv6 address FE80::6D link-local
+ ipv6 address 2001:BBBB::6D/127
+ ipv6 enable
+!
+interface Ethernet1/0
+ description == link to R16 == 
+ no switchport
+ ip address 10.20.0.105 255.255.255.254
+ duplex auto
+ ipv6 address FE80::69 link-local
+ ipv6 address 2001:BBBB::69/127
+ ipv6 enable
+!
+interface Ethernet1/1
+!
+interface Ethernet1/2
+!
+interface Ethernet1/3
+!
+interface Vlan80
+ description == for USER80 ==
+ ip address 172.10.80.254 255.255.255.0
+ ipv6 address FE80::80:FE link-local
+ ipv6 address 2001:BBBB::80:FE/112
+ ipv6 enable
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!         
+!         
+!
+!
+!
+!
+control-plane
+!
+banner motd ^CThis is a secure system. Authorized Access Only!^C
+!
+line con 0
+ exec-timeout 0 0
+ password 7 05080F1C2243
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 110A1016141D
+ logging synchronous
+ login
+!
+!
+end

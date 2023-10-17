@@ -1,0 +1,129 @@
+Building configuration...
+
+Current configuration : 1715 bytes
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R16
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$Vqrj$xSxyzYf/LtJAZ2YXr63bM1
+!
+no aaa new-model
+clock timezone MSK 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!         
+!
+!
+
+
+!
+!
+!
+!
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+redundancy
+!         
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description == FOR MGMT ==
+ ip address 10.20.0.1 255.255.255.255
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:BBBB::1/127
+ ipv6 enable
+!
+interface Ethernet0/0
+ description == link to SW10 ==
+ ip address 10.20.0.100 255.255.255.254
+ ipv6 address FE80::64 link-local
+ ipv6 address 2001:BBBB::64/127
+ ipv6 enable
+!
+interface Ethernet0/1
+ description == link to R18 == 
+ ip address 10.20.0.102 255.255.255.254
+ ipv6 address FE80::66 link-local
+ ipv6 address 2001:BBBB::66/127
+ ipv6 enable
+!
+interface Ethernet0/2
+ description == link to SW9 == 
+ ip address 10.20.0.104 255.255.255.254
+ ipv6 address FE80::68 link-local
+ ipv6 address 2001:BBBB::68/127
+ ipv6 enable
+!
+interface Ethernet0/3
+ description == link to R32 == 
+ ip address 10.20.0.106 255.255.255.254
+ ipv6 address FE80::5A link-local
+ ipv6 address 2001:BBBB::5A/127
+ ipv6 enable
+!         
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+banner motd ^CThis is a secure system. Authorized Access Only!^C
+!
+line con 0
+ exec-timeout 0 0
+ password 7 045802150C2E
+ logging synchronous
+ login    
+line aux 0
+line vty 0 4
+ password 7 045802150C2E
+ logging synchronous
+ login
+ transport input all
+!
+!
+end
