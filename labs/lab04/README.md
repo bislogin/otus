@@ -30,11 +30,11 @@ ipv6 prefix-list NET31v6 seq 5 permit 2001:CCCC:1::31:0/112
 
 ```
 route-map BALANCE permit 10
- match ip address prefix-list NET30 NET30v6
+ match ip address prefix-list NET30
  set ip next-hop 100.100.30.2
 
 route-map BALANCE permit 20
- match ip address prefix-list NET31 NET31v6
+ match ip address prefix-list NET31
  set ip next-hop 100.100.31.2
 
 route-map BALANCE deny 30
