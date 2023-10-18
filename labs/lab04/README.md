@@ -80,7 +80,16 @@ route-map BALANCE permit 20
 
 route-map BALANCE deny 30
 ```
-
+Добавляем route=map на интерфейс
+```
+interface Ethernet0/2
+ description == link to SW29 ==
+ ip address 10.30.0.100 255.255.255.254
+ ip policy route-map BALANCE
+ ipv6 address FE80::64 link-local
+ ipv6 address 2001:CCCC:1::64/127
+ ipv6 enable
+```
 Добавим статичесткие маршруты
 
 ```
