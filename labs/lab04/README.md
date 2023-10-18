@@ -17,24 +17,25 @@
 
 Распределим трафик, VPC30 будет ходить через R26, а VPC31 через R25
 
-Создадим prefix-list с сетями кождого VPC
+Создадим access-list с сетями кождого VPC
 
 ```
-ip prefix-list NET30 seq 5 permit 172.10.30.0/24
-ip prefix-list NET31 seq 5 permit 172.10.31.0/24
-ipv6 prefix-list NET30v6 seq 5 permit 2001:CCCC:1::30:0/112
-ipv6 prefix-list NET31v6 seq 5 permit 2001:CCCC:1::31:0/112
+ip access-list standard 30
+ permit 172.10.30.0 0.0.0.255
+ip access-list standard 31
+ permit 172.10.31.0 0.0.0.255
+
 ```
 
 Создадим route-map, в котором заменим next-hop для кождого VPC
 
 ```
 route-map BALANCE permit 10
- match ip address prefix-list NET30
+ match ip address prefix-list 30
  set ip next-hop 100.100.30.2
 
 route-map BALANCE permit 20
- match ip address prefix-list NET31
+ match ip address prefix-list 31
  set ip next-hop 100.100.31.2
 
 route-map BALANCE deny 30
@@ -98,6 +99,50 @@ ip route 0.0.0.0 0.0.0.0 100.100.30.2 254 name "track defaulte to R26" track 26
 ipv6 route ::/0 2001:CCCC:1:CCD2::2 254 name "default ipv6 to R25"
 ipv6 route ::/0 2001:CCCC:1:CCD1::2 254 name "default ipv6 to R26"
 ```
+Проверим как хходит трафик с VPC
+```
+VPCS> show ip
+
+NAME        : VPCS[1]
+IP/MASK     : 172.10.30.1/24
+GATEWAY     : 172.10.30.254
+DNS         : 
+MAC         : 00:50:79:66:68:1e
+LPORT       : 20000
+RHOST:PORT  : 127.0.0.1:30000
+MTU         : 1500
+
+VPCS> trace 10.40.0.107
+trace to 10.40.0.107, 8 hops max, press Ctrl+C to stop
+ 1   172.10.30.254   0.264 ms  0.261 ms  0.272 ms
+ 2   10.30.0.100   0.634 ms  0.531 ms  0.544 ms
+ 3   *100.100.30.2   0.822 ms (ICMP type:3, code:3, Destination port unreachable)  *
+
+VPCS> 
+```
+
+```
+VPCS> show ip
+
+NAME        : VPCS[1]
+IP/MASK     : 172.10.31.1/24
+GATEWAY     : 172.10.31.254
+DNS         : 
+MAC         : 00:50:79:66:68:1f
+LPORT       : 20000
+RHOST:PORT  : 127.0.0.1:30000
+MTU         : 1500
+
+VPCS> trace 10.40.0.107
+trace to 10.40.0.107, 8 hops max, press Ctrl+C to stop
+ 1   172.10.31.254   0.208 ms  0.250 ms  0.309 ms
+ 2   10.30.0.100   0.538 ms  0.438 ms  0.514 ms
+ 3   100.100.31.2   0.812 ms  0.705 ms  0.686 ms
+ 4   *10.40.0.107   0.942 ms (ICMP type:3, code:3, Destination port unreachable)  *
+
+VPCS> 
+```
+
 
 Добавим статичесткие маршруты для офиса Лабытнанги
 
