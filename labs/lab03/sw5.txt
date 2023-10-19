@@ -1,0 +1,166 @@
+Building configuration...
+
+Current configuration : 2838 bytes
+!
+! Last configuration change at 13:55:17 MSK Thu Oct 19 2023
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service compress-config
+!
+hostname SW5
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$1bH7$Ees16aD8fJfqrmm3DvP4./
+!
+no aaa new-model
+clock timezone MSK 3 0
+fhrp version vrrp v3
+!
+!         
+!
+!
+!
+!
+!
+!
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+! 
+!
+!
+!
+!
+!
+!         
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 10.10.0.10 255.255.255.255
+ ipv6 address FE80::10 link-local
+ ipv6 address 2001:AAAA::10/127
+ ipv6 enable
+!
+interface Ethernet0/0
+ description == link to SW2 ==
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface Ethernet0/1
+ description == link to SW3 ==
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface Ethernet0/2
+ description == link to SW4 ==
+ no switchport
+ ip address 10.10.0.121 255.255.255.254
+ duplex auto
+ ipv6 address FE80::79 link-local
+ ipv6 address 2001:AAAA::79/127
+ ipv6 enable
+!
+interface Ethernet0/3
+ description == link to SW4 ==
+ no switchport
+ ip address 10.10.0.123 255.255.255.254
+ duplex auto
+ ipv6 address FE80::7B link-local
+ ipv6 address 2001:AAAA::7B/127
+ ipv6 enable
+!
+interface Ethernet1/0
+ description == link to R12 == 
+ no switchport
+ ip address 10.10.0.109 255.255.255.254
+ duplex auto
+ ipv6 address FE80::6D link-local
+ ipv6 address 2001:AAAA::6D/127
+ ipv6 enable
+!
+interface Ethernet1/1
+ description == link to R13 == 
+ no switchport
+ ip address 10.10.0.103 255.255.255.254
+ duplex auto
+ ipv6 address FE80::67 link-local
+ ipv6 address 2001:AAAA::67/127
+ ipv6 enable
+!
+interface Ethernet1/2
+!
+interface Ethernet1/3
+!
+interface Vlan10
+ description == for USER1 ==
+ ip address 172.10.10.253 255.255.255.0
+ ipv6 address FE80::10:FD link-local
+ ipv6 address 2001:AAAA::10:FD/112
+ ipv6 enable
+ vrrp 10 address-family ipv4
+  priority 150
+  address 172.10.10.254 primary
+  exit-vrrp
+ vrrp 10 address-family ipv6
+  priority 150
+  address FE80::10:FE primary
+  address 2001:AAAA::10:FE/112
+  exit-vrrp
+!
+interface Vlan70
+ description == for USER7 ==
+ ip address 172.10.70.253 255.255.255.0
+ ipv6 address FE80::70:FD link-local
+ ipv6 address 2001:AAAA::70:FD/112
+ ipv6 enable
+ vrrp 70 address-family ipv4
+  address 172.10.70.254 primary
+  exit-vrrp
+ vrrp 70 address-family ipv6
+  address FE80::70:FE primary
+  address 2001:AAAA::70:FE/112
+  exit-vrrp
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+!
+!
+control-plane
+!
+banner motd ^CThis is a secure system. Authorized Access Only!^C
+!
+line con 0
+ exec-timeout 0 0
+ password 7 121A0C041104
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 045802150C2E
+ logging synchronous
+ login    
+!
+!
+end
