@@ -10,6 +10,7 @@ R14(config-router)#passive-interface default
 R14(config-router)#no passive-interface ethernet 0/0
 R14(config-router)#no passive-interface ethernet 0/1
 R14(config-router)#no passive-interface ethernet 0/3
+R14(config-router)#no passive-interface lo0
 R14(config-router)#network 10.10.0.105 0.0.0.1 area 0
 R14(config-router)#network 10.10.0.115 0.0.0.1 area 0
 R14(config-router)#network 10.10.0.116 0.0.0.1 area 101
@@ -23,6 +24,7 @@ R15(config-router)#passive-interface default
 R15(config-router)#no passive-interface ethernet 0/0
 R15(config-router)#no passive-interface ethernet 0/1
 R15(config-router)#no passive-interface ethernet 0/3
+R15(config-router)#no passive-interface lo0
 R15(config-router)#network 10.10.0.106 0.0.0.1 area 0
 R15(config-router)#network 10.10.0.112 0.0.0.1 area 0
 R15(config-router)#network 10.10.0.118 0.0.0.1 area 102
@@ -48,6 +50,7 @@ R12(config-router)#no passive-interface ethernet 0/0
 R12(config-router)#no passive-interface ethernet 0/1
 R12(config-router)#no passive-interface ethernet 0/2
 R12(config-router)#no passive-interface ethernet 0/3
+R12(config-router)#no passive-interface lo0
 R12(config-router)#network 10.10.0.1 0.0.0.0 area 10
 R12(config-router)#network 10.10.0.100 0.0.0.1 area 10
 R12(config-router)#network 10.10.0.102 0.0.0.1 area 10
@@ -61,7 +64,8 @@ SW4(config-router)#passive-interface default
 SW4(config-router)#no passive-interface ethernet 0/2
 SW4(config-router)#no passive-interface ethernet 0/3
 SW4(config-router)#no passive-interface ethernet 1/0
-SW4(config-router)#no passive-interface ethernet 1/1        
+SW4(config-router)#no passive-interface ethernet 1/1
+SW4(config-router)#no passive-interface lo0       
 SW4(config-router)#no passive-interface vlan 10
 SW4(config-router)#no passive-interface vlan 70
 SW4(config-router)#network 10.0.0.9 0.0.0.0 area 10
@@ -144,6 +148,7 @@ R19(config)#router ospf 1
 R19(config-router)#router-id 10.10.0.5
 R19(config-router)#passive-interface default 
 R19(config-router)#no passive-interface ethernet 0/0
+R19(config-router)#no passive-interface lo0
 R19(config-router)#network 10.10.0.5 0.0.0.0 area 101
 R19(config-router)#network 10.10.0.117 0.0.0.1 area 101
 ```
@@ -177,6 +182,7 @@ R20(config)#router ospf 1
 R20(config-router)#router-id 10.10.0.6
 R20(config-router)#passive-interface default
 R20(config-router)#no passive-interface ethernet 0/0
+R20(config-router)#no passive-interface lo0
 R20(config-router)#network 10.10.0.6 0.0.0.0 area 102
 R20(config-router)#network 10.10.0.119 0.0.0.1 area 102
 ```
