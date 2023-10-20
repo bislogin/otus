@@ -1,0 +1,144 @@
+Building configuration...
+
+Current configuration : 2093 bytes
+!
+! Last configuration change at 19:48:06 MSK Fri Oct 20 2023
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R20
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$mSr4$ymxoPzSxgVtbVzpc9mWwH0
+!
+no aaa new-model
+clock timezone MSK 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!         
+!
+!
+!
+
+
+!
+!
+!
+!
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!         
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description == FOR MGMT ==
+ ip address 10.10.0.6 255.255.255.255
+ ipv6 address FE80::6 link-local
+ ipv6 address 2001:AAAA::6/128
+ ipv6 enable
+ ipv6 ospf 1 area 10
+ ipv6 ospf network point-to-point
+!
+interface Ethernet0/0
+ description == link to R15 == 
+ ip address 10.10.0.119 255.255.255.254
+ ipv6 address FE80::77 link-local
+ ipv6 address 2001:AAAA::77/127
+ ipv6 enable
+ ipv6 ospf 1 area 102
+ ipv6 ospf network point-to-point
+!
+interface Ethernet0/1
+ no ip address
+ shutdown
+!
+interface Ethernet0/2
+ no ip address
+ shutdown
+!
+interface Ethernet0/3
+ no ip address
+ shutdown
+!
+router ospf 1
+ router-id 10.10.0.6
+ passive-interface default
+ no passive-interface Ethernet0/0
+ no passive-interface Loopback0
+ network 10.10.0.6 0.0.0.0 area 102
+ network 10.10.0.118 0.0.0.1 area 102
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+ipv6 router ospf 1
+ router-id 10.10.0.6
+ distribute-list prefix-list DENY_OSPFv6-101 in Ethernet0/0 
+ passive-interface default
+ no passive-interface Ethernet0/0
+ no passive-interface Loopback0
+!
+!
+!
+ipv6 prefix-list DENY_OSPFv6-101 seq 5 deny 2001:AAAA::74/127
+ipv6 prefix-list DENY_OSPFv6-101 seq 10 deny 2001:AAAA::5/128
+ipv6 prefix-list DENY_OSPFv6-101 seq 15 permit ::/0 le 128
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+banner motd ^CThis is a secure system. Authorized Access Only!^C
+!
+line con 0
+ exec-timeout 0 0
+ password 7 060506324F41
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 05080F1C2243
+ logging synchronous
+ login    
+ transport input all
+!
+!
+end

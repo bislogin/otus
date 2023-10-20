@@ -1,0 +1,168 @@
+Building configuration...
+
+*Oct 20 16:46:44.715: %SYS-5-CONFIG_I: Configured from console by console
+Current configuration : 2923 bytes
+!
+! Last configuration change at 19:46:44 MSK Fri Oct 20 2023
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R15
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$.9sp$FeOjU0dSSUOEAfiHajOJ1.
+!
+no aaa new-model
+clock timezone MSK 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!         
+!
+!
+!
+
+
+!
+!
+!
+!
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!         
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description == FOR MGMT ==
+ ip address 10.10.0.4 255.255.255.255
+ ipv6 address FE80::4 link-local
+ ipv6 address 2001:AAAA::4/128
+ ipv6 enable
+ ipv6 ospf 1 area 10
+ ipv6 ospf network point-to-point
+!
+interface Ethernet0/0
+ description == link to R13 == 
+ ip address 10.10.0.113 255.255.255.254
+ ipv6 address FE80::71 link-local
+ ipv6 address 2001:AAAA::71/127
+ ipv6 enable
+ ipv6 ospf 1 area 0
+ ipv6 ospf network point-to-point
+!
+interface Ethernet0/1
+ description == link to R12 == 
+ ip address 10.10.0.107 255.255.255.254
+ ipv6 address FE80::6B link-local
+ ipv6 address 2001:AAAA::6B/127
+ ipv6 enable
+ ipv6 ospf 1 area 0
+ ipv6 ospf network point-to-point
+!
+interface Ethernet0/2
+ description == link to R21 Lamas == 
+ ip address 100.100.11.1 255.255.255.252
+ ipv6 address FE80::AE link-local
+ ipv6 address 2001:AAAA:AAEE::1/64
+ ipv6 enable
+!
+interface Ethernet0/3
+ description == link to R20 == 
+ ip address 10.10.0.118 255.255.255.254
+ ipv6 address FE80::76 link-local
+ ipv6 address 2001:AAAA::76/127
+ ipv6 enable
+ ipv6 ospf 1 area 102
+ ipv6 ospf network point-to-point
+!
+router ospf 1
+ router-id 10.10.0.4
+ area 102 filter-list prefix DENY_OSPF-101 in
+ passive-interface default
+ no passive-interface Ethernet0/0
+ no passive-interface Ethernet0/1
+ no passive-interface Ethernet0/3
+ no passive-interface Loopback0
+ network 10.10.0.4 0.0.0.0 area 0
+ network 10.10.0.106 0.0.0.1 area 0
+ network 10.10.0.112 0.0.0.1 area 0
+ network 10.10.0.118 0.0.0.1 area 102
+ network 100.100.11.0 0.0.0.3 area 0
+ default-information originate
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 0.0.0.0 0.0.0.0 100.100.11.2 name "def to Triada"
+!
+!
+ip prefix-list DENY_OSPF-101 seq 5 deny 10.10.0.5/32
+ip prefix-list DENY_OSPF-101 seq 10 deny 10.10.0.116/31
+ip prefix-list DENY_OSPF-101 seq 15 permit 0.0.0.0/0 le 32
+ipv6 router ospf 1
+ router-id 10.10.0.4
+ default-information originate
+ passive-interface default
+ no passive-interface Ethernet0/0
+ no passive-interface Ethernet0/1
+ no passive-interface Ethernet0/3
+ no passive-interface Loopback0
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+banner motd ^CThis is a secure system. Authorized Access Only!^C
+!
+line con 0
+ exec-timeout 0 0
+ password 7 00071A150754
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 02050D480809
+ logging synchronous
+ login    
+ transport input all
+!
+!
+end
