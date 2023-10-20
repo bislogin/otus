@@ -107,7 +107,7 @@ interface Ethernet0/3
 ipv6 router ospf 1
  default-information originate
 ```
-Создадим проццес OSPF
+Создадим процесс OSPF
 
 ```
 ipv6 router ospf 1
