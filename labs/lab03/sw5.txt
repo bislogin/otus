@@ -54,7 +54,7 @@ vlan internal allocation policy ascending
 interface Loopback0
  ip address 10.10.0.10 255.255.255.255
  ipv6 address FE80::10 link-local
- ipv6 address 2001:AAAA::10/127
+ ipv6 address 2001:AAAA::10/128
  ipv6 enable
 !
 interface Ethernet0/0
