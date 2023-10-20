@@ -64,7 +64,7 @@ interface Loopback0
  description == FOR MGMT == 
  ip address 10.40.0.3 255.255.255.255
  ipv6 address FE80::3 link-local
- ipv6 address 2001:DDDD::3/127
+ ipv6 address 2001:DDDD::3/128
  ipv6 enable
 !
 interface Ethernet0/0
