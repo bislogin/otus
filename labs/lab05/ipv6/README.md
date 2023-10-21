@@ -302,17 +302,16 @@ L   2001:AAAA::9/128 [0/0]
 
 #### 3. Маршрутизатор R19 находится в зоне 101 и получает только маршрут по умолчанию.
 
-На R19 создадим prefix-list для фильтрации маршрутной информации, для получания только маршрута по умолчанию:
+Поменяем на интерфейсах соседей (R14, R19) тип area на total stub, чтобы внутрь проходил только маршрут по умолчанию:
 ```
-ipv6 prefix-list ONLY_DEF_v6 seq 5 permit ::/0
-ipv6 prefix-list ONLY_DEF_v6 seq 10 deny ::/0 le 128
+area 101 stub no-summary
 ```
 
 Создадим проццес OSPF, и добавим фильтрацию:
 ```
 ipv6 router ospf 1
  router-id 10.10.0.5
- distribute-list prefix-list ONLY_DEF_v6 in Ethernet0/0 
+ area 101 stub no-summary 
  passive-interface default
  no passive-interface Ethernet0/0
  no passive-interface Loopback0
