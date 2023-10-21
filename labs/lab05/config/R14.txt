@@ -67,7 +67,7 @@ interface Loopback0
  ipv6 address FE80::3 link-local
  ipv6 address 2001:AAAA::3/128
  ipv6 enable
- ipv6 ospf 1 area 10
+ ipv6 ospf 1 area 0
  ipv6 ospf network point-to-point
 !
 interface Ethernet0/0
