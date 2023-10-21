@@ -107,15 +107,13 @@ no ip http secure-server
 !
 ipv6 router ospf 1
  router-id 10.10.0.5
- distribute-list prefix-list ONLY_DEF_v6 in Ethernet0/0 
+ area 101 stub no-summary 
  passive-interface default
  no passive-interface Ethernet0/0
  no passive-interface Loopback0
 !
 !
 !
-ipv6 prefix-list ONLY_DEF_v6 seq 5 permit ::/0
-ipv6 prefix-list ONLY_DEF_v6 seq 10 deny ::/0 le 128
 !
 !
 control-plane
