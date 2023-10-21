@@ -101,7 +101,6 @@ interface Ethernet0/3
  ipv6 address FE80::74 link-local
  ipv6 address 2001:AAAA::74/127
  ipv6 enable
- ipv6 traffic-filter ONLY_DEF_v6 in
  ipv6 ospf 1 area 101
  ipv6 ospf network point-to-point
 !
@@ -133,6 +132,7 @@ ip prefix-list ONLY_DEF seq 10 deny 0.0.0.0/0 le 32
 ipv6 route ::/0 2001:AAAA:AAFF::2
 ipv6 router ospf 1
  router-id 10.10.0.3
+ area 101 stub no-summary
  default-information originate
  passive-interface default
  no passive-interface Ethernet0/0
