@@ -248,45 +248,8 @@ R20(config-if)#ip ospf 1 area 101
 R20(config-if)#interface ethernet 0/0
 R20(config-if)#ip ospf 1 area 0
 ```
-Проверим таблицу маршрутизации:
-```
-R20(config-router)#do show ip route
-Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
-       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
-       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
-       E1 - OSPF external type 1, E2 - OSPF external type 2
-       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
-       ia - IS-IS inter area, * - candidate default, U - per-user static route
-       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
-       + - replicated route, % - next hop override
 
-Gateway of last resort is 10.10.0.118 to network 0.0.0.0
-
-O*E2  0.0.0.0/0 [110/1] via 10.10.0.118, 00:00:19, Ethernet0/0
-      10.0.0.0/8 is variably subnetted, 17 subnets, 2 masks
-O IA     10.10.0.1/32 [110/21] via 10.10.0.118, 00:00:19, Ethernet0/0
-O IA     10.10.0.2/32 [110/21] via 10.10.0.118, 00:00:19, Ethernet0/0
-O IA     10.10.0.3/32 [110/31] via 10.10.0.118, 00:00:19, Ethernet0/0
-O IA     10.10.0.4/32 [110/11] via 10.10.0.118, 00:00:19, Ethernet0/0
-O IA     10.10.0.5/32 [110/41] via 10.10.0.118, 00:00:19, Ethernet0/0
-C        10.10.0.6/32 is directly connected, Loopback0
-O IA     10.10.0.100/31 [110/30] via 10.10.0.118, 00:00:19, Ethernet0/0
-O IA     10.10.0.102/31 [110/30] via 10.10.0.118, 00:00:19, Ethernet0/0
-O IA     10.10.0.104/31 [110/30] via 10.10.0.118, 00:00:19, Ethernet0/0
-O IA     10.10.0.106/31 [110/20] via 10.10.0.118, 00:00:19, Ethernet0/0
-O IA     10.10.0.108/31 [110/30] via 10.10.0.118, 00:00:19, Ethernet0/0
-O IA     10.10.0.110/31 [110/30] via 10.10.0.118, 00:00:19, Ethernet0/0
-O IA     10.10.0.112/31 [110/20] via 10.10.0.118, 00:00:19, Ethernet0/0
-O IA     10.10.0.114/31 [110/30] via 10.10.0.118, 00:00:19, Ethernet0/0
-O IA     10.10.0.116/31 [110/40] via 10.10.0.118, 00:00:19, Ethernet0/0
-C        10.10.0.118/31 is directly connected, Ethernet0/0
-L        10.10.0.119/32 is directly connected, Ethernet0/0
-      100.0.0.0/30 is subnetted, 2 subnets
-O IA     100.100.10.0 [110/40] via 10.10.0.118, 00:00:19, Ethernet0/0
-O IA     100.100.11.0 [110/20] via 10.10.0.118, 00:00:19, Ethernet0/0
-```
-
-На R15 создадим prefix-list для фильтрации маршрутной информации, запрещающий сети из area 101:
+Cоздадим prefix-list для фильтрации маршрутной информации, запрещающий сети из area 101:
 ```
 ip prefix-list DENY_OSPF-101 seq 5 deny 10.10.0.5/32
 ip prefix-list DENY_OSPF-101 seq 10 deny 10.10.0.116/31
@@ -298,40 +261,98 @@ router ospf 1
 area 102 filter-list prefix DENY_OSPF-101 in
 ```
 
-Проверим таблицу маршрутизации на R20 ещё раз:
+Проверим таблицу ospf database на R20:
 ```
-R20(config-router)#do show ip route
-Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
-       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
-       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
-       E1 - OSPF external type 1, E2 - OSPF external type 2
-       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
-       ia - IS-IS inter area, * - candidate default, U - per-user static route
-       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
-       + - replicated route, % - next hop override
+R20# show ip ospf database 
 
-Gateway of last resort is 10.10.0.118 to network 0.0.0.0
+            OSPF Router with ID (10.10.0.6) (Process ID 1)
 
-O*E2  0.0.0.0/0 [110/1] via 10.10.0.118, 00:00:52, Ethernet0/0
-      10.0.0.0/8 is variably subnetted, 15 subnets, 2 masks
-O IA     10.10.0.1/32 [110/21] via 10.10.0.118, 00:00:52, Ethernet0/0
-O IA     10.10.0.2/32 [110/21] via 10.10.0.118, 00:00:52, Ethernet0/0
-O IA     10.10.0.3/32 [110/31] via 10.10.0.118, 00:00:52, Ethernet0/0
-O IA     10.10.0.4/32 [110/11] via 10.10.0.118, 00:00:52, Ethernet0/0
-C        10.10.0.6/32 is directly connected, Loopback0
-O IA     10.10.0.100/31 [110/30] via 10.10.0.118, 00:00:52, Ethernet0/0
-O IA     10.10.0.102/31 [110/30] via 10.10.0.118, 00:00:52, Ethernet0/0
-O IA     10.10.0.104/31 [110/30] via 10.10.0.118, 00:00:52, Ethernet0/0
-O IA     10.10.0.106/31 [110/20] via 10.10.0.118, 00:00:52, Ethernet0/0
-O IA     10.10.0.108/31 [110/30] via 10.10.0.118, 00:00:52, Ethernet0/0
-O IA     10.10.0.110/31 [110/30] via 10.10.0.118, 00:00:52, Ethernet0/0
-O IA     10.10.0.112/31 [110/20] via 10.10.0.118, 00:00:52, Ethernet0/0
-O IA     10.10.0.114/31 [110/30] via 10.10.0.118, 00:00:52, Ethernet0/0
-C        10.10.0.118/31 is directly connected, Ethernet0/0
-L        10.10.0.119/32 is directly connected, Ethernet0/0
-      100.0.0.0/30 is subnetted, 2 subnets
-O IA     100.100.10.0 [110/40] via 10.10.0.118, 00:00:52, Ethernet0/0
-O IA     100.100.11.0 [110/20] via 10.10.0.118, 00:00:52, Ethernet0/0
+                Router Link States (Area 0)
+
+Link ID         ADV Router      Age         Seq#       Checksum Link count
+10.10.0.1       10.10.0.1       1473        0x800000B3 0x0062DA 2
+10.10.0.2       10.10.0.2       308         0x800000B5 0x009088 2
+10.10.0.3       10.10.0.3       1634        0x800000CB 0x0003B8 4
+10.10.0.4       10.10.0.4       282         0x800000B8 0x0014B3 4
+10.10.0.5       10.10.0.5       1510        0x8000000A 0x00FFDB 1
+10.10.0.6       10.10.0.6       268         0x80000009 0x0022B4 1
+
+                Net Link States (Area 0)
+
+Link ID         ADV Router      Age         Seq#       Checksum
+10.10.0.104     10.10.0.1       1473        0x80000009 0x007BF9
+10.10.0.106     10.10.0.1       212         0x80000009 0x0075FC
+10.10.0.112     10.10.0.2       308         0x80000009 0x003D2D
+10.10.0.114     10.10.0.2       1591        0x80000009 0x001B4E
+10.10.0.116     10.10.0.3       1633        0x80000009 0x00273C
+10.10.0.118     10.10.0.4       282         0x80000009 0x002539
+
+                Summary Net Link States (Area 0)
+
+Link ID         ADV Router      Age         Seq#       Checksum
+10.10.0.1       10.10.0.1       1978        0x800000AC 0x0086DF
+10.10.0.1       10.10.0.2       1327        0x800000AA 0x004D06
+10.10.0.2       10.10.0.1       1978        0x800000AA 0x00490A
+10.10.0.2       10.10.0.2       1327        0x800000AD 0x0074EE
+10.10.0.5       10.10.0.5       1510        0x80000009 0x008D74
+10.10.0.6       10.10.0.6       268         0x80000009 0x007D82
+10.10.0.10      10.10.0.1       1978        0x800000AA 0x0094C0
+10.10.0.10      10.10.0.2       1327        0x800000AA 0x008EC5
+10.10.0.100     10.10.0.1       1978        0x800000AD 0x00F603
+10.10.0.100     10.10.0.2       1327        0x800000AA 0x00BF28
+10.10.0.102     10.10.0.1       1978        0x800000AD 0x00E215
+10.10.0.102     10.10.0.2       1327        0x800000AA 0x0047A8
+10.10.0.108     10.10.0.1       1978        0x800000AA 0x0011D9
+10.10.0.108     10.10.0.2       1327        0x800000AD 0x00A050
+10.10.0.110     10.10.0.1       1978        0x800000AA 0x00617D
+10.10.0.110     10.10.0.2       1327        0x800000AD 0x008C62
+10.10.0.120     10.10.0.1       1978        0x800000AA 0x009846
+10.10.0.120     10.10.0.2       1327        0x800000AA 0x00924B
+10.10.0.122     10.10.0.1       1978        0x800000AA 0x008458
+10.10.0.122     10.10.0.2       1327        0x800000AA 0x007E5D
+172.10.10.0     10.10.0.1       1978        0x800000AA 0x00486A
+172.10.10.0     10.10.0.2       1327        0x800000AA 0x00426F
+172.10.70.0     10.10.0.1       1978        0x800000AA 0x00B1C4
+172.10.70.0     10.10.0.2       1327        0x800000AA 0x00ABC9
+
+                Router Link States (Area 102)
+
+Link ID         ADV Router      Age         Seq#       Checksum Link count
+10.10.0.6       10.10.0.6       268         0x8000000A 0x00B821 1
+
+                Summary Net Link States (Area 102)
+
+Link ID         ADV Router      Age         Seq#       Checksum
+10.10.0.1       10.10.0.6       268         0x80000009 0x007878
+10.10.0.2       10.10.0.6       268         0x80000009 0x006E81
+10.10.0.3       10.10.0.6       268         0x80000009 0x00C81C
+10.10.0.4       10.10.0.6       268         0x80000009 0x00F502
+10.10.0.10      10.10.0.6       268         0x80000009 0x00825B
+10.10.0.100     10.10.0.6       268         0x80000009 0x00EA9A
+10.10.0.102     10.10.0.6       268         0x80000009 0x00D6AC
+10.10.0.104     10.10.0.6       268         0x80000009 0x00C2BE
+10.10.0.106     10.10.0.6       268         0x80000009 0x004A3F
+10.10.0.108     10.10.0.6       268         0x80000009 0x009AE2
+10.10.0.110     10.10.0.6       268         0x80000009 0x0086F4
+10.10.0.112     10.10.0.6       268         0x80000009 0x000E75
+10.10.0.114     10.10.0.6       268         0x80000009 0x005E19
+10.10.0.118     10.10.0.6       268         0x80000009 0x006D1A
+10.10.0.120     10.10.0.6       268         0x80000009 0x0086E0
+10.10.0.122     10.10.0.6       268         0x80000009 0x0072F2
+172.10.10.0     10.10.0.6       268         0x80000009 0x003605
+172.10.70.0     10.10.0.6       268         0x80000009 0x009F5F
+
+                Summary ASB Link States (Area 102)
+
+Link ID         ADV Router      Age         Seq#       Checksum
+10.10.0.3       10.10.0.6       268         0x80000009 0x00B034
+10.10.0.4       10.10.0.6       268         0x80000009 0x00DD1A
+
+                Type-5 AS External Link States
+
+Link ID         ADV Router      Age         Seq#       Checksum Tag
+0.0.0.0         10.10.0.3       123         0x800000AD 0x0025C9 1
+0.0.0.0         10.10.0.4       282         0x800000AE 0x001DCF 1
 ```
 
-Видим, что указынных сетей на R15 больше нету.
+Видим, что указынных сетей на R20 в Area 102 нету.
