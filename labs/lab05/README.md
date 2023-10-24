@@ -1,7 +1,7 @@
 # Лабороторная работа на тему:    
 ## OSPF 
 
-![Alt text]()
+![Alt text](https://github.com/bislogin/otus/blob/main/labs/lab05/ospf-msk.png)
 
 ###  Цель:
 
