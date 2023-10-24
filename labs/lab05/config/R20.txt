@@ -1,8 +1,8 @@
 Building configuration...
 
-Current configuration : 2093 bytes
+Current configuration : 2281 bytes
 !
-! Last configuration change at 19:48:06 MSK Fri Oct 20 2023
+! Last configuration change at 13:03:29 MSK Tue Oct 24 2023
 version 15.2
 service timestamps debug datetime msec
 service timestamps log datetime msec
@@ -32,6 +32,7 @@ mmi snmp-timeout 180
 !
 !
 !
+no ip domain lookup
 ip cef
 ipv6 unicast-routing
 ipv6 cef
@@ -44,8 +45,8 @@ multilink bundle-name authenticated
 !
 !
 !
-!
 !         
+!
 redundancy
 !
 !
@@ -64,19 +65,21 @@ redundancy
 interface Loopback0
  description == FOR MGMT ==
  ip address 10.10.0.6 255.255.255.255
+ ip ospf 1 area 102
  ipv6 address FE80::6 link-local
  ipv6 address 2001:AAAA::6/128
  ipv6 enable
- ipv6 ospf 1 area 10
+ ipv6 ospf 1 area 102
  ipv6 ospf network point-to-point
 !
 interface Ethernet0/0
  description == link to R15 == 
  ip address 10.10.0.119 255.255.255.254
+ ip ospf 1 area 0
  ipv6 address FE80::77 link-local
  ipv6 address 2001:AAAA::77/127
  ipv6 enable
- ipv6 ospf 1 area 102
+ ipv6 ospf 1 area 0
  ipv6 ospf network point-to-point
 !
 interface Ethernet0/1
@@ -93,11 +96,10 @@ interface Ethernet0/3
 !
 router ospf 1
  router-id 10.10.0.6
+ area 102 filter-list prefix DENY_OSPF-101 in
  passive-interface default
  no passive-interface Ethernet0/0
  no passive-interface Loopback0
- network 10.10.0.6 0.0.0.0 area 102
- network 10.10.0.118 0.0.0.1 area 102
 !
 ip forward-protocol nd
 !
@@ -105,9 +107,13 @@ ip forward-protocol nd
 no ip http server
 no ip http secure-server
 !
+!
+ip prefix-list DENY_OSPF-101 seq 5 deny 10.10.0.5/32
+ip prefix-list DENY_OSPF-101 seq 10 deny 10.10.0.116/31
+ip prefix-list DENY_OSPF-101 seq 15 permit 0.0.0.0/0 le 32
 ipv6 router ospf 1
  router-id 10.10.0.6
- distribute-list prefix-list DENY_OSPFv6-101 in Ethernet0/0 
+ distribute-list prefix-list DENY_OSPFv6-101 in  
  passive-interface default
  no passive-interface Ethernet0/0
  no passive-interface Loopback0
@@ -137,7 +143,7 @@ line aux 0
 line vty 0 4
  password 7 05080F1C2243
  logging synchronous
- login    
+ login
  transport input all
 !
 !
