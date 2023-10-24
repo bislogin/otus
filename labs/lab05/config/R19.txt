@@ -1,8 +1,8 @@
 Building configuration...
 
-Current configuration : 2007 bytes
+Current configuration : 1882 bytes
 !
-! Last configuration change at 19:47:39 MSK Fri Oct 20 2023
+! Last configuration change at 13:03:19 MSK Tue Oct 24 2023
 version 15.2
 service timestamps debug datetime msec
 service timestamps log datetime msec
@@ -32,6 +32,7 @@ mmi snmp-timeout 180
 !
 !
 !
+no ip domain lookup
 ip cef
 ipv6 unicast-routing
 ipv6 cef
@@ -44,8 +45,8 @@ multilink bundle-name authenticated
 !
 !
 !
-!
 !         
+!
 redundancy
 !
 !
@@ -64,6 +65,7 @@ redundancy
 interface Loopback0
  description == FOR MGMT ==
  ip address 10.10.0.5 255.255.255.255
+ ip ospf 1 area 101
  ipv6 address FE80::5 link-local
  ipv6 address 2001:AAAA::5/128
  ipv6 enable
@@ -73,10 +75,11 @@ interface Loopback0
 interface Ethernet0/0
  description == link to R14 == 
  ip address 10.10.0.117 255.255.255.254
+ ip ospf 1 area 0
  ipv6 address FE80::75 link-local
  ipv6 address 2001:AAAA::75/127
  ipv6 enable
- ipv6 ospf 1 area 101
+ ipv6 ospf 1 area 0
  ipv6 ospf network point-to-point
 !
 interface Ethernet0/1
@@ -93,11 +96,10 @@ interface Ethernet0/3
 !
 router ospf 1
  router-id 10.10.0.5
+ area 101 stub no-summary
  passive-interface default
  no passive-interface Ethernet0/0
  no passive-interface Loopback0
- network 10.10.0.5 0.0.0.0 area 101
- network 10.10.0.116 0.0.0.1 area 101
 !
 ip forward-protocol nd
 !
@@ -107,13 +109,12 @@ no ip http secure-server
 !
 ipv6 router ospf 1
  router-id 10.10.0.5
- area 101 stub no-summary 
+ area 101 stub no-summary
  passive-interface default
  no passive-interface Ethernet0/0
  no passive-interface Loopback0
 !
-!
-!
+!         
 !
 !
 control-plane
@@ -136,6 +137,6 @@ line vty 0 4
  logging synchronous
  login
  transport input all
-!
+!         
 !
 end
