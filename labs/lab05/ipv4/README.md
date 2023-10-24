@@ -11,10 +11,14 @@ R14(config-router)#no passive-interface ethernet 0/0
 R14(config-router)#no passive-interface ethernet 0/1
 R14(config-router)#no passive-interface ethernet 0/3
 R14(config-router)#no passive-interface lo0
-R14(config-router)#network 10.10.0.105 0.0.0.1 area 0
-R14(config-router)#network 10.10.0.115 0.0.0.1 area 0
-R14(config-router)#network 10.10.0.116 0.0.0.1 area 101
-R14(config-router)#network 10.10.0.3 0.0.0.0 area 0
+R14(config-router)#interface Loopback0
+R14(config-if)#ip ospf 1 area 0
+R14(config-if)#interface ethernet 0/0
+R14(config-if)#ip ospf 1 area 0
+R14(config-if)#interface ethernet 0/1
+R14(config-if)#ip ospf 1 area 0
+R14(config-if)#interface ethernet 0/3
+R14(config-if)#ip ospf 1 area 0
 ```
 
 ```
@@ -25,10 +29,14 @@ R15(config-router)#no passive-interface ethernet 0/0
 R15(config-router)#no passive-interface ethernet 0/1
 R15(config-router)#no passive-interface ethernet 0/3
 R15(config-router)#no passive-interface lo0
-R15(config-router)#network 10.10.0.106 0.0.0.1 area 0
-R15(config-router)#network 10.10.0.112 0.0.0.1 area 0
-R15(config-router)#network 10.10.0.118 0.0.0.1 area 102
-R15(config-router)#network 10.10.0.4 0.0.0.0 area 0
+R15(config-router)#interface Loopback0
+R15(config-if)#ip ospf 1 area 0
+R15(config-if)#interface ethernet 0/0
+R15(config-if)#ip ospf 1 area 0
+R15(config-if)#interface ethernet 0/1
+R15(config-if)#ip ospf 1 area 0
+R15(config-if)#interface ethernet 0/3
+R15(config-if)#ip ospf 1 area 0
 ```
 
 #### 1. Маршрутизаторы R12-R13(SW4-SW5) находятся в зоне 10. Дополнительно к маршрутам должны получать маршрут по умолчанию.
@@ -132,16 +140,6 @@ L        172.10.70.252/32 is directly connected, Vlan70
 
 #### 3. Маршрутизатор R19 находится в зоне 101 и получает только маршрут по умолчанию.
 
-На R14 создадим prefix-list для фильтрации маршрутной информации, для получания только маршрута по умолчанию:
-```
-ip prefix-list ONLY_DEF seq 5 permit 0.0.0.0/0
-ip prefix-list ONLY_DEF seq 10 deny 0.0.0.0/0 le 32
-```
-В процессе OSPF указываем нужную area и насправление:
-```
-router ospf 1
-area 101 filter-list prefix ONLY_DEF in
-```
 Создадим проццес OSPF на R19:
 ```
 R19(config)#router ospf 1
@@ -149,32 +147,93 @@ R19(config-router)#router-id 10.10.0.5
 R19(config-router)#passive-interface default 
 R19(config-router)#no passive-interface ethernet 0/0
 R19(config-router)#no passive-interface lo0
-R19(config-router)#network 10.10.0.5 0.0.0.0 area 101
-R19(config-router)#network 10.10.0.117 0.0.0.1 area 101
+R19(config-router)#area 101 stub no-summary
+R19(config-router)#interface Loopback0
+R19(config-if)#ip ospf 1 area 101
+R19(config-if)#interface ethernet 0/0
+R19(config-if)#ip ospf 1 area 0
 ```
 
-Проверим таблицу маршрутизации:
+Проверим таблицу ospf database:
 ```
-R19#show ip route
-Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
-       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
-       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
-       E1 - OSPF external type 1, E2 - OSPF external type 2
-       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
-       ia - IS-IS inter area, * - candidate default, U - per-user static route
-       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
-       + - replicated route, % - next hop override
+R19#show ip ospf database 
 
-Gateway of last resort is 10.10.0.116 to network 0.0.0.0
+            OSPF Router with ID (10.10.0.5) (Process ID 1)
 
-O*E2  0.0.0.0/0 [110/1] via 10.10.0.116, 02:38:18, Ethernet0/0
-      10.0.0.0/8 is variably subnetted, 3 subnets, 2 masks
-C        10.10.0.5/32 is directly connected, Loopback0
-C        10.10.0.116/31 is directly connected, Ethernet0/0
-L        10.10.0.117/32 is directly connected, Ethernet0/0
+                Router Link States (Area 0)
+
+Link ID         ADV Router      Age         Seq#       Checksum Link count
+10.10.0.1       10.10.0.1       895         0x800000AD 0x006ED4 2
+10.10.0.2       10.10.0.2       1491        0x800000AE 0x009E81 2
+10.10.0.3       10.10.0.3       982         0x800000C5 0x000FB2 4
+10.10.0.4       10.10.0.4       1656        0x800000B1 0x0022AC 4
+10.10.0.5       10.10.0.5       921         0x80000004 0x000CD5 1
+10.10.0.6       10.10.0.6       1615        0x80000002 0x0030AD 1
+
+                Net Link States (Area 0)
+
+Link ID         ADV Router      Age         Seq#       Checksum
+10.10.0.104     10.10.0.1       895         0x80000003 0x0087F3
+10.10.0.106     10.10.0.1       1661        0x80000002 0x0083F5
+10.10.0.112     10.10.0.2       1491        0x80000002 0x004B26
+10.10.0.114     10.10.0.2       966         0x80000003 0x002748
+10.10.0.116     10.10.0.3       982         0x80000003 0x003336
+10.10.0.118     10.10.0.4       1656        0x80000002 0x003332
+
+                Summary Net Link States (Area 0)
+
+Link ID         ADV Router      Age         Seq#       Checksum
+10.10.0.1       10.10.0.1       1415        0x800000A6 0x0092D9
+10.10.0.1       10.10.0.2       723         0x800000A4 0x0059FF
+10.10.0.2       10.10.0.1       1151        0x800000A4 0x005504
+10.10.0.2       10.10.0.2       723         0x800000A7 0x0080E8
+10.10.0.5       10.10.0.5       921         0x80000003 0x00996E
+10.10.0.6       10.10.0.6       1615        0x80000002 0x008B7B
+10.10.0.10      10.10.0.1       1151        0x800000A4 0x00A0BA
+10.10.0.10      10.10.0.2       723         0x800000A4 0x009ABF
+10.10.0.100     10.10.0.1       1415        0x800000A7 0x0003FC
+10.10.0.100     10.10.0.2       723         0x800000A4 0x00CB22
+10.10.0.102     10.10.0.1       1415        0x800000A7 0x00EE0F
+10.10.0.102     10.10.0.2       723         0x800000A4 0x0053A2
+10.10.0.108     10.10.0.1       1151        0x800000A4 0x001DD3
+10.10.0.108     10.10.0.2       723         0x800000A7 0x00AC4A
+10.10.0.110     10.10.0.1       1151        0x800000A4 0x006D77
+10.10.0.110     10.10.0.2       723         0x800000A7 0x00985C
+10.10.0.120     10.10.0.1       1151        0x800000A4 0x00A440
+10.10.0.120     10.10.0.2       723         0x800000A4 0x009E45
+10.10.0.122     10.10.0.1       1151        0x800000A4 0x009052
+10.10.0.122     10.10.0.2       723         0x800000A4 0x008A57
+172.10.10.0     10.10.0.1       1151        0x800000A4 0x005464
+172.10.10.0     10.10.0.2       723         0x800000A4 0x004E69
+172.10.70.0     10.10.0.1       1151        0x800000A4 0x00BDBE
+172.10.70.0     10.10.0.2       723         0x800000A4 0x00B7C3
+
+                Router Link States (Area 101)
+
+Link ID         ADV Router      Age         Seq#       Checksum Link count
+10.10.0.5       10.10.0.5       921         0x80000003 0x00EAFA 1
+
+                Summary Net Link States (Area 101)
+
+Link ID         ADV Router      Age         Seq#       Checksum
+0.0.0.0         10.10.0.5       662         0x80000005 0x00E040
+
+                Type-5 AS External Link States
+
+Link ID         ADV Router      Age         Seq#       Checksum Tag
+0.0.0.0         10.10.0.3       1486        0x800000A6 0x0033C2 1
+0.0.0.0         10.10.0.4       1656        0x800000A7 0x002BC8 1
 ```
+Видим, что для Area 101 у нас только маршрут по умолчанию.
 
 #### 4. Маршрутизатор R20 находится в зоне 102 и получает все маршруты, кроме маршрутов до сетей зоны 101
+
+Создадим на R20 prefix-list для фильтрации:
+```
+ip prefix-list DENY_OSPF-101 seq 5 deny 10.10.0.5/32
+ip prefix-list DENY_OSPF-101 seq 10 deny 10.10.0.116/31
+ip prefix-list DENY_OSPF-101 seq 15 permit 0.0.0.0/0 le 32
+```
 
 Создадим проццес OSPF на R20:
 ```
@@ -183,8 +242,11 @@ R20(config-router)#router-id 10.10.0.6
 R20(config-router)#passive-interface default
 R20(config-router)#no passive-interface ethernet 0/0
 R20(config-router)#no passive-interface lo0
-R20(config-router)#network 10.10.0.6 0.0.0.0 area 102
-R20(config-router)#network 10.10.0.119 0.0.0.1 area 102
+R20(config-router)#area 102 filter-list prefix DENY_OSPF-101 in
+R20(config-router)#interface Loopback0
+R20(config-if)#ip ospf 1 area 101
+R20(config-if)#interface ethernet 0/0
+R20(config-if)#ip ospf 1 area 0
 ```
 Проверим таблицу маршрутизации:
 ```
