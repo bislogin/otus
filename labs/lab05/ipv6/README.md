@@ -20,7 +20,7 @@ interface Loopback0
  ipv6 address FE80::3 link-local
  ipv6 address 2001:AAAA::3/128
  ipv6 enable
- ipv6 ospf 1 area 10
+ ipv6 ospf 1 area 0
  ipv6 ospf network point-to-point
 !
 interface Ethernet0/0
@@ -48,7 +48,7 @@ interface Ethernet0/3
  ipv6 address 2001:AAAA::74/127
  ipv6 enable
  ipv6 traffic-filter ONLY_DEF_v6 in
- ipv6 ospf 1 area 101
+ ipv6 ospf 1 area 0
  ipv6 ospf network point-to-point
 ```
 На R15
@@ -67,7 +67,7 @@ interface Loopback0
  ipv6 address FE80::4 link-local
  ipv6 address 2001:AAAA::4/128
  ipv6 enable
- ipv6 ospf 1 area 10
+ ipv6 ospf 1 area 0
  ipv6 ospf network point-to-point
 !
 interface Ethernet0/0
@@ -94,7 +94,7 @@ interface Ethernet0/3
  ipv6 address FE80::76 link-local
  ipv6 address 2001:AAAA::76/127
  ipv6 enable
- ipv6 ospf 1 area 102
+ ipv6 ospf 1 area 0
  ipv6 ospf network point-to-point
 
 ```
@@ -302,7 +302,7 @@ L   2001:AAAA::9/128 [0/0]
 
 #### 3. Маршрутизатор R19 находится в зоне 101 и получает только маршрут по умолчанию.
 
-Поменяем на интерфейсах соседей (R14, R19) тип area на total stub, чтобы внутрь проходил только маршрут по умолчанию:
+Поменяем на R19 тип area на total stub, чтобы внутрь проходил только маршрут по умолчанию:
 ```
 area 101 stub no-summary
 ```
@@ -331,33 +331,96 @@ interface Ethernet0/0
  ipv6 address FE80::75 link-local
  ipv6 address 2001:AAAA::75/127
  ipv6 enable
- ipv6 ospf 1 area 101
+ ipv6 ospf 1 area 0
  ipv6 ospf network point-to-point
 ```
 
-Проверим таблицу маршрутизации:
+Проверим таблицу ospf database:
 ```
-R19#show ipv6 route
-IPv6 Routing Table - default - 6 entries
-Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
-       B - BGP, HA - Home Agent, MR - Mobile Router, R - RIP
-       H - NHRP, I1 - ISIS L1, I2 - ISIS L2, IA - ISIS interarea
-       IS - ISIS summary, D - EIGRP, EX - EIGRP external, NM - NEMO
-       ND - ND Default, NDp - ND Prefix, DCE - Destination, NDr - Redirect
-       O - OSPF Intra, OI - OSPF Inter, OE1 - OSPF ext 1, OE2 - OSPF ext 2
-       ON1 - OSPF NSSA ext 1, ON2 - OSPF NSSA ext 2, l - LISP
-OE2 ::/0 [110/1], tag 1
-     via FE80::74, Ethernet0/0
-C   2001:AAAA::4/127 [0/0]
-     via Loopback0, directly connected
-L   2001:AAAA::5/128 [0/0]
-     via Loopback0, receive
-C   2001:AAAA::74/127 [0/0]
-     via Ethernet0/0, directly connected
-L   2001:AAAA::75/128 [0/0]
-     via Ethernet0/0, receive
-L   FF00::/8 [0/0]
-     via Null0, receive
+R19# show ipv6 ospf database 
+
+            OSPFv3 Router with ID (10.10.0.5) (Process ID 1)
+
+                Router Link States (Area 0)
+
+ADV Router       Age         Seq#        Fragment ID  Link count  Bits
+ 10.10.0.1       1550        0x800000A5  0            2           B
+ 10.10.0.2       1441        0x800000A5  0            2           B
+ 10.10.0.3       1372        0x800000AC  0            3           E
+ 10.10.0.4       83          0x800000AB  0            3           E
+ 10.10.0.5       1448        0x80000009  0            1           B
+ 10.10.0.6       92          0x8000000B  0            1           B
+
+                Inter Area Prefix Link States (Area 0)
+
+ADV Router       Age         Seq#        Prefix
+ 10.10.0.1       1550        0x800000A3  2001:AAAA::66/127
+ 10.10.0.1       1550        0x800000A3  2001:AAAA::64/127
+ 10.10.0.1       1550        0x800000A3  2001:AAAA::6E/127
+ 10.10.0.1       1550        0x800000A3  2001:AAAA::7A/127
+ 10.10.0.1       1550        0x800000A3  2001:AAAA::78/127
+ 10.10.0.1       1550        0x800000A4  2001:AAAA::6C/127
+ 10.10.0.1       1550        0x800000A3  2001:AAAA::10:0/112
+ 10.10.0.1       1550        0x800000A3  2001:AAAA::70:0/112
+ 10.10.0.1       777         0x800000A2  2001:AAAA::9/128
+ 10.10.0.1       1550        0x800000A1  2001:AAAA::10/128
+ 10.10.0.1       1550        0x800000A1  2001:AAAA::1/128
+ 10.10.0.1       1550        0x800000A1  2001:AAAA::2/128
+ 10.10.0.2       1441        0x800000A3  2001:AAAA::6E/127
+ 10.10.0.2       1441        0x800000A3  2001:AAAA::6C/127
+ 10.10.0.2       925         0x800000A3  2001:AAAA::64/127
+ 10.10.0.2       925         0x800000A3  2001:AAAA::7A/127
+ 10.10.0.2       925         0x800000A3  2001:AAAA::78/127
+ 10.10.0.2       925         0x800000A4  2001:AAAA::66/127
+ 10.10.0.2       925         0x800000A3  2001:AAAA::10:0/112
+ 10.10.0.2       925         0x800000A3  2001:AAAA::70:0/112
+ 10.10.0.2       665         0x800000A2  2001:AAAA::9/128
+ 10.10.0.2       179         0x800000A2  2001:AAAA::10/128
+ 10.10.0.2       179         0x800000A2  2001:AAAA::1/128
+ 10.10.0.2       179         0x800000A2  2001:AAAA::2/128
+ 10.10.0.5       1448        0x80000009  2001:AAAA::5/128
+ 10.10.0.6       92          0x80000009  2001:AAAA::6/128
+
+                Link (Type-8) Link States (Area 0)
+
+ADV Router       Age         Seq#        Link ID    Interface
+ 10.10.0.3       1372        0x80000009  6          Et0/0
+ 10.10.0.5       1448        0x80000009  3          Et0/0
+
+                Intra Area Prefix Link States (Area 0)
+
+ADV Router       Age         Seq#        Link ID    Ref-lstype  Ref-LSID
+ 10.10.0.1       1550        0x800000A3  0          0x2001      0
+ 10.10.0.2       1441        0x800000A3  0          0x2001      0
+ 10.10.0.3       1372        0x800000A5  0          0x2001      0
+ 10.10.0.4       569         0x800000A7  0          0x2001      0
+ 10.10.0.5       1448        0x80000009  0          0x2001      0
+ 10.10.0.6       92          0x80000009  0          0x2001      0
+
+                Router Link States (Area 101)
+
+ADV Router       Age         Seq#        Fragment ID  Link count  Bits
+ 10.10.0.5       1206        0x800000AF  0            0           B
+
+                Inter Area Prefix Link States (Area 101)
+
+ADV Router       Age         Seq#        Prefix
+ 10.10.0.5       966         0x8000000A  ::/0
+
+                Link (Type-8) Link States (Area 101)
+
+ADV Router       Age         Seq#        Link ID    Interface
+ 10.10.0.5       1206        0x800000A6  10         Lo0
+
+                Intra Area Prefix Link States (Area 101)
+
+ADV Router       Age         Seq#        Link ID    Ref-lstype  Ref-LSID
+ 10.10.0.5       1206        0x800000AC  0          0x2001      0
+
+                Type-5 AS External Link States
+
+ADV Router       Age         Seq#        Prefix
+ 10.10.0.3       1879        0x800000A8  ::/0
 ```
 
 #### 4. Маршрутизатор R20 находится в зоне 102 и получает все маршруты, кроме маршрутов до сетей зоны 101
@@ -368,11 +431,12 @@ ipv6 prefix-list DENY_OSPFv6-101 seq 5 deny 2001:AAAA::74/127
 ipv6 prefix-list DENY_OSPFv6-101 seq 10 deny 2001:AAAA::5/128
 ipv6 prefix-list DENY_OSPFv6-101 seq 15 permit ::/0 le 128
 ```
+
 Создадим проццес OSPF:
 ```
 ipv6 router ospf 1
  router-id 10.10.0.6
- distribute-list prefix-list DENY_OSPFv6-101 in Ethernet0/0 
+ distribute-list prefix-list DENY_OSPFv6-101 in
  passive-interface default
  no passive-interface Ethernet0/0
  no passive-interface Loopback0
@@ -383,7 +447,7 @@ interface Loopback0
  ipv6 address FE80::6 link-local
  ipv6 address 2001:AAAA::6/128
  ipv6 enable
- ipv6 ospf 1 area 10
+ ipv6 ospf 1 area 102
  ipv6 ospf network point-to-point
 !
 interface Ethernet0/0
@@ -392,67 +456,100 @@ interface Ethernet0/0
  ipv6 address FE80::77 link-local
  ipv6 address 2001:AAAA::77/127
  ipv6 enable
- ipv6 ospf 1 area 102
+ ipv6 ospf 1 area 0
  ipv6 ospf network point-to-point
 ```
 
-Проверим таблицу маршрутизации:
+Проверим таблицу ospf database:
 ```
-R20(config-rtr)#do show ipv6 route                                        
-IPv6 Routing Table - default - 24 entries
-Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
-       B - BGP, HA - Home Agent, MR - Mobile Router, R - RIP
-       H - NHRP, I1 - ISIS L1, I2 - ISIS L2, IA - ISIS interarea
-       IS - ISIS summary, D - EIGRP, EX - EIGRP external, NM - NEMO
-       ND - ND Default, NDp - ND Prefix, DCE - Destination, NDr - Redirect
-       O - OSPF Intra, OI - OSPF Inter, OE1 - OSPF ext 1, OE2 - OSPF ext 2
-       ON1 - OSPF NSSA ext 1, ON2 - OSPF NSSA ext 2, l - LISP
-OE2 ::/0 [110/1], tag 1
-     via FE80::76, Ethernet0/0
-OI  2001:AAAA::1/128 [110/20]
-     via FE80::76, Ethernet0/0
-OI  2001:AAAA::2/128 [110/20]
-     via FE80::76, Ethernet0/0
-OI  2001:AAAA::3/128 [110/30]
-     via FE80::76, Ethernet0/0
-OI  2001:AAAA::4/128 [110/10]
-     via FE80::76, Ethernet0/0
-LC  2001:AAAA::6/128 [0/0]
-     via Loopback0, receive
-OI  2001:AAAA::9/128 [110/30]
-     via FE80::76, Ethernet0/0
-OI  2001:AAAA::10/128 [110/30]
-     via FE80::76, Ethernet0/0
-OI  2001:AAAA::5A/127 [110/30]
-     via FE80::76, Ethernet0/0
-OI  2001:AAAA::64/127 [110/30]
-     via FE80::76, Ethernet0/0
-OI  2001:AAAA::66/127 [110/30]
-     via FE80::76, Ethernet0/0
-OI  2001:AAAA::68/127 [110/30]
-     via FE80::76, Ethernet0/0
-OI  2001:AAAA::6A/127 [110/20]
-     via FE80::76, Ethernet0/0
-OI  2001:AAAA::6C/127 [110/30]
-     via FE80::76, Ethernet0/0
-OI  2001:AAAA::6E/127 [110/30]
-     via FE80::76, Ethernet0/0
-OI  2001:AAAA::70/127 [110/20]
-     via FE80::76, Ethernet0/0
-OI  2001:AAAA::72/127 [110/30]
-     via FE80::76, Ethernet0/0
-C   2001:AAAA::76/127 [0/0]
-     via Ethernet0/0, directly connected
-L   2001:AAAA::77/128 [0/0]
-     via Ethernet0/0, receive
-OI  2001:AAAA::78/127 [110/40]
-     via FE80::76, Ethernet0/0
-OI  2001:AAAA::7A/127 [110/40]
-     via FE80::76, Ethernet0/0
-OI  2001:AAAA::10:0/112 [110/31]
-     via FE80::76, Ethernet0/0
-OI  2001:AAAA::70:0/112 [110/31]
-     via FE80::76, Ethernet0/0
-L   FF00::/8 [0/0]
-     via Null0, receive
+R20#  show ip ospf database 
+
+            OSPF Router with ID (10.10.0.6) (Process ID 1)
+
+                Router Link States (Area 0)
+
+Link ID         ADV Router      Age         Seq#       Checksum Link count
+10.10.0.1       10.10.0.1       1286        0x800000AD 0x006ED4 2
+10.10.0.2       10.10.0.2       1883        0x800000AE 0x009E81 2
+10.10.0.3       10.10.0.3       1375        0x800000C5 0x000FB2 4
+10.10.0.4       10.10.0.4       30          0x800000B2 0x0020AD 4
+10.10.0.5       10.10.0.5       1317        0x80000004 0x000CD5 1
+10.10.0.6       10.10.0.6       12          0x80000003 0x002EAE 1
+
+                Net Link States (Area 0)
+
+Link ID         ADV Router      Age         Seq#       Checksum
+10.10.0.104     10.10.0.1       1286        0x80000003 0x0087F3
+10.10.0.106     10.10.0.1       17          0x80000003 0x0081F6
+10.10.0.112     10.10.0.2       1883        0x80000002 0x004B26
+10.10.0.114     10.10.0.2       1357        0x80000003 0x002748
+10.10.0.116     10.10.0.3       1375        0x80000003 0x003336
+10.10.0.118     10.10.0.4       30          0x80000003 0x003133
+
+                Summary Net Link States (Area 0)
+
+Link ID         ADV Router      Age         Seq#       Checksum
+10.10.0.1       10.10.0.1       1806        0x800000A6 0x0092D9
+10.10.0.1       10.10.0.2       1115        0x800000A4 0x0059FF
+10.10.0.2       10.10.0.1       1542        0x800000A4 0x005504
+10.10.0.2       10.10.0.2       1115        0x800000A7 0x0080E8
+10.10.0.5       10.10.0.5       1317        0x80000003 0x00996E
+10.10.0.6       10.10.0.6       12          0x80000003 0x00897C
+10.10.0.10      10.10.0.1       1542        0x800000A4 0x00A0BA
+10.10.0.10      10.10.0.2       1115        0x800000A4 0x009ABF
+10.10.0.100     10.10.0.1       1806        0x800000A7 0x0003FC
+10.10.0.100     10.10.0.2       1115        0x800000A4 0x00CB22
+10.10.0.102     10.10.0.1       1806        0x800000A7 0x00EE0F
+10.10.0.102     10.10.0.2       1115        0x800000A4 0x0053A2
+10.10.0.108     10.10.0.1       1542        0x800000A4 0x001DD3
+10.10.0.108     10.10.0.2       1115        0x800000A7 0x00AC4A
+10.10.0.110     10.10.0.1       1542        0x800000A4 0x006D77
+10.10.0.110     10.10.0.2       1115        0x800000A7 0x00985C
+10.10.0.120     10.10.0.1       1542        0x800000A4 0x00A440
+10.10.0.120     10.10.0.2       1115        0x800000A4 0x009E45
+10.10.0.122     10.10.0.1       1542        0x800000A4 0x009052
+10.10.0.122     10.10.0.2       1115        0x800000A4 0x008A57
+172.10.10.0     10.10.0.1       1542        0x800000A4 0x005464
+172.10.10.0     10.10.0.2       1115        0x800000A4 0x004E69
+172.10.70.0     10.10.0.1       1542        0x800000A4 0x00BDBE
+172.10.70.0     10.10.0.2       1115        0x800000A4 0x00B7C3
+
+                Router Link States (Area 102)
+
+Link ID         ADV Router      Age         Seq#       Checksum Link count
+10.10.0.6       10.10.0.6       12          0x80000004 0x00C41B 1
+
+                Summary Net Link States (Area 102)
+
+Link ID         ADV Router      Age         Seq#       Checksum
+10.10.0.1       10.10.0.6       12          0x80000003 0x008472
+10.10.0.2       10.10.0.6       12          0x80000003 0x007A7B
+10.10.0.3       10.10.0.6       12          0x80000003 0x00D416
+10.10.0.4       10.10.0.6       12          0x80000003 0x0002FB
+10.10.0.10      10.10.0.6       12          0x80000003 0x008E55
+10.10.0.100     10.10.0.6       12          0x80000003 0x00F694
+10.10.0.102     10.10.0.6       12          0x80000003 0x00E2A6
+10.10.0.104     10.10.0.6       12          0x80000003 0x00CEB8
+10.10.0.106     10.10.0.6       12          0x80000003 0x005639
+10.10.0.108     10.10.0.6       12          0x80000003 0x00A6DC
+10.10.0.110     10.10.0.6       12          0x80000003 0x0092EE
+10.10.0.112     10.10.0.6       12          0x80000003 0x001A6F
+10.10.0.114     10.10.0.6       12          0x80000003 0x006A13
+10.10.0.118     10.10.0.6       12          0x80000003 0x007914
+10.10.0.120     10.10.0.6       12          0x80000003 0x0092DA
+10.10.0.122     10.10.0.6       12          0x80000003 0x007EEC
+172.10.10.0     10.10.0.6       12          0x80000003 0x0042FE
+172.10.70.0     10.10.0.6       12          0x80000003 0x00AB59
+
+                Summary ASB Link States (Area 102)
+
+Link ID         ADV Router      Age         Seq#       Checksum
+10.10.0.3       10.10.0.6       12          0x80000003 0x00BC2E
+10.10.0.4       10.10.0.6       12          0x80000003 0x00E914
+
+                Type-5 AS External Link States
+
+Link ID         ADV Router      Age         Seq#       Checksum Tag
+0.0.0.0         10.10.0.3       1879        0x800000A6 0x0033C2 1
+0.0.0.0         10.10.0.4       30          0x800000A8 0x0029C9 1
 ```
