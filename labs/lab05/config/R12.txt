@@ -1,8 +1,8 @@
 Building configuration...
 
-Current configuration : 3064 bytes
+Current configuration : 3084 bytes
 !
-! Last configuration change at 19:44:49 MSK Fri Oct 20 2023
+! Last configuration change at 13:03:33 MSK Tue Oct 24 2023
 version 15.2
 service timestamps debug datetime msec
 service timestamps log datetime msec
@@ -32,6 +32,7 @@ mmi snmp-timeout 180
 !
 !
 !
+no ip domain lookup
 ip cef
 ipv6 unicast-routing
 ipv6 cef
@@ -44,8 +45,8 @@ multilink bundle-name authenticated
 !
 !
 !
-!
 !         
+!
 redundancy
 bfd-template single-hop BFD
  interval min-tx 50 min-rx 50 multiplier 3
@@ -113,8 +114,8 @@ interface Ethernet0/3
 !
 interface Ethernet1/0
  no ip address
- shutdown
-!         
+ shutdown 
+!
 interface Ethernet1/1
  no ip address
  shutdown
@@ -159,7 +160,7 @@ ipv6 router ospf 1
 !
 !
 !
-!
+!         
 control-plane
 !
 !
