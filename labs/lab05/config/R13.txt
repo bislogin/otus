@@ -1,8 +1,8 @@
 Building configuration...
 
-Current configuration : 3064 bytes
+Current configuration : 3084 bytes
 !
-! Last configuration change at 19:45:18 MSK Fri Oct 20 2023
+! Last configuration change at 13:03:36 MSK Tue Oct 24 2023
 !
 version 15.4
 service timestamps debug datetime msec
@@ -37,6 +37,7 @@ mmi snmp-timeout 180
 !
 !
 !
+no ip domain lookup
 ip cef
 ipv6 unicast-routing
 ipv6 cef
@@ -44,8 +45,8 @@ ipv6 cef
 multilink bundle-name authenticated
 !
 !
-!
 !         
+!
 !
 !
 !
@@ -67,8 +68,8 @@ bfd-template single-hop BFDT
 !
 !
 !
-!
 !         
+!
 !
 interface Loopback0
  description == FOR MGMT == 
@@ -114,7 +115,7 @@ interface Ethernet0/3
  ipv6 enable
  ipv6 ospf 1 area 0
  ipv6 ospf network point-to-point
-!         
+!
 interface Ethernet1/0
  no ip address
  shutdown
