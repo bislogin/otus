@@ -47,10 +47,10 @@ interface Ethernet0/3
  ipv6 address FE80::74 link-local
  ipv6 address 2001:AAAA::74/127
  ipv6 enable
- ipv6 traffic-filter ONLY_DEF_v6 in
  ipv6 ospf 1 area 0
  ipv6 ospf network point-to-point
 ```
+
 На R15
 ```
 ipv6 router ospf 1
@@ -107,8 +107,8 @@ interface Ethernet0/3
 ipv6 router ospf 1
  default-information originate
 ```
-Создадим процесс OSPF
 
+Создадим процесс OSPF
 ```
 ipv6 router ospf 1
  router-id 10.10.0.1
