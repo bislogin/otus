@@ -1,8 +1,8 @@
 Building configuration...
 
-Current configuration : 4433 bytes
+Current configuration : 4759 bytes
 !
-! Last configuration change at 19:43:38 MSK Fri Oct 20 2023
+! Last configuration change at 12:38:36 MSK Tue Oct 31 2023
 !
 version 15.2
 service timestamps debug datetime msec
@@ -29,6 +29,7 @@ fhrp version vrrp v3
 !
 !
 !
+no ip domain-lookup
 ip cef
 ipv6 unicast-routing
 ipv6 cef
@@ -44,8 +45,8 @@ vlan internal allocation policy ascending
 !
 ! 
 !
-!
 !         
+!
 !
 !
 !
@@ -67,7 +68,7 @@ interface Ethernet0/0
  description == link to SW3 ==
  switchport trunk encapsulation dot1q
  switchport mode trunk
-!
+!         
 interface Ethernet0/1
  description == link to SW2 ==
  switchport trunk encapsulation dot1q
@@ -77,6 +78,8 @@ interface Ethernet0/2
  description == link to SW5 ==
  no switchport
  ip address 10.10.0.120 255.255.255.254
+ ip ospf network point-to-point
+ ip ospf 1 area 10
  duplex auto
  ipv6 address FE80::78 link-local
  ipv6 address 2001:AAAA::78/127
@@ -88,6 +91,8 @@ interface Ethernet0/3
  description == link to SW5 ==
  no switchport
  ip address 10.10.0.122 255.255.255.254
+ ip ospf network point-to-point
+ ip ospf 1 area 10
  duplex auto
  ipv6 address FE80::7A link-local
  ipv6 address 2001:AAAA::7A/127
@@ -100,6 +105,8 @@ interface Ethernet1/0
  no switchport
  ip address 10.10.0.101 255.255.255.254
  no ip redirects
+ ip ospf network point-to-point
+ ip ospf 1 area 10
  duplex auto
  ipv6 address FE80::65 link-local
  ipv6 address 2001:AAAA::65/127
@@ -107,11 +114,13 @@ interface Ethernet1/0
  ipv6 ospf 1 area 10
  ipv6 ospf network point-to-point
  bfd interval 50 min_rx 50 multiplier 3
-!
+!         
 interface Ethernet1/1
  description == link to R13 == 
  no switchport
  ip address 10.10.0.111 255.255.255.254
+ ip ospf network point-to-point
+ ip ospf 1 area 10
  duplex auto
  ipv6 address FE80::6F link-local
  ipv6 address 2001:AAAA::6F/127
@@ -127,6 +136,8 @@ interface Ethernet1/3
 interface Vlan10
  description == for USER1 ==
  ip address 172.10.10.252 255.255.255.0
+ ip ospf network point-to-point
+ ip ospf 1 area 10
  ipv6 address FE80::10:FC link-local
  ipv6 address 2001:AAAA::10:FC/112
  ipv6 enable
@@ -143,6 +154,8 @@ interface Vlan10
 interface Vlan70
  description == for USER7 ==
  ip address 172.10.70.252 255.255.255.0
+ ip ospf network point-to-point
+ ip ospf 1 area 10
  ipv6 address FE80::70:FC link-local
  ipv6 address 2001:AAAA::70:FC/112
  ipv6 enable
@@ -216,5 +229,5 @@ line vty 0 4
  logging synchronous
  login
 !
-!
+!         
 end
