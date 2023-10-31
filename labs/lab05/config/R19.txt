@@ -1,8 +1,8 @@
 Building configuration...
 
-Current configuration : 1882 bytes
+Current configuration : 1914 bytes
 !
-! Last configuration change at 13:03:19 MSK Tue Oct 24 2023
+! Last configuration change at 12:42:00 MSK Tue Oct 31 2023
 version 15.2
 service timestamps debug datetime msec
 service timestamps log datetime msec
@@ -75,6 +75,7 @@ interface Loopback0
 interface Ethernet0/0
  description == link to R14 == 
  ip address 10.10.0.117 255.255.255.254
+ ip ospf network point-to-point
  ip ospf 1 area 0
  ipv6 address FE80::75 link-local
  ipv6 address 2001:AAAA::75/127
@@ -113,8 +114,8 @@ ipv6 router ospf 1
  passive-interface default
  no passive-interface Ethernet0/0
  no passive-interface Loopback0
-!
 !         
+!
 !
 !
 control-plane
@@ -137,6 +138,6 @@ line vty 0 4
  logging synchronous
  login
  transport input all
-!         
+!
 !
 end
