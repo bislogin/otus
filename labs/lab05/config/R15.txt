@@ -1,8 +1,8 @@
 Building configuration...
 
-Current configuration : 2785 bytes
+Current configuration : 3407 bytes
 !
-! Last configuration change at 13:03:26 MSK Tue Oct 24 2023
+! Last configuration change at 12:41:37 MSK Tue Oct 31 2023
 version 15.2
 service timestamps debug datetime msec
 service timestamps log datetime msec
@@ -75,6 +75,7 @@ interface Loopback0
 interface Ethernet0/0
  description == link to R13 == 
  ip address 10.10.0.113 255.255.255.254
+ ip ospf network point-to-point
  ip ospf 1 area 0
  ipv6 address FE80::71 link-local
  ipv6 address 2001:AAAA::71/127
@@ -85,16 +86,18 @@ interface Ethernet0/0
 interface Ethernet0/1
  description == link to R12 == 
  ip address 10.10.0.107 255.255.255.254
+ ip ospf network point-to-point
  ip ospf 1 area 0
  ipv6 address FE80::6B link-local
  ipv6 address 2001:AAAA::6B/127
  ipv6 enable
  ipv6 ospf 1 area 0
  ipv6 ospf network point-to-point
-!         
+!
 interface Ethernet0/2
  description == link to R21 Lamas == 
  ip address 100.100.11.1 255.255.255.252
+ ip ospf network point-to-point
  ipv6 address FE80::AE link-local
  ipv6 address 2001:AAAA:AAEE::1/64
  ipv6 enable
@@ -102,6 +105,7 @@ interface Ethernet0/2
 interface Ethernet0/3
  description == link to R20 == 
  ip address 10.10.0.118 255.255.255.254
+ ip ospf network point-to-point
  ip ospf 1 area 0
  ipv6 address FE80::76 link-local
  ipv6 address 2001:AAAA::76/127
@@ -109,12 +113,36 @@ interface Ethernet0/3
  ipv6 ospf 1 area 0
  ipv6 ospf network point-to-point
 !
+interface Ethernet1/0
+ description == link to R14 == 
+ ip address 10.10.0.125 255.255.255.254
+ ip ospf network point-to-point
+ ip ospf 1 area 0
+ ipv6 address FE80::7D link-local
+ ipv6 address 2001:AAAA::7D/127
+ ipv6 enable
+ ipv6 ospf 1 area 0
+ ipv6 ospf network point-to-point
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
 router ospf 1
  router-id 10.10.0.4
  passive-interface default
  no passive-interface Ethernet0/0
  no passive-interface Ethernet0/1
  no passive-interface Ethernet0/3
+ no passive-interface Ethernet1/0
  no passive-interface Loopback0
  default-information originate
 !
@@ -136,8 +164,9 @@ ipv6 router ospf 1
  no passive-interface Ethernet0/0
  no passive-interface Ethernet0/1
  no passive-interface Ethernet0/3
+ no passive-interface Ethernet1/0
  no passive-interface Loopback0
-!         
+!
 !
 !
 !
@@ -154,7 +183,7 @@ line con 0
  exec-timeout 0 0
  password 7 00071A150754
  logging synchronous
- login
+ login    
 line aux 0
 line vty 0 4
  password 7 02050D480809
