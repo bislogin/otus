@@ -1,6 +1,8 @@
 # Лабороторная работа на тему:    
 ## EIGRP
 
+![Alt text](https://github.com/bislogin/otus/blob/main/labs/lab07/topology.png)
+
 ### Цель:
 Настроить EIGRP в С.-Петербург   
 Использовать named EIGRP   
