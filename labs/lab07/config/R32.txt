@@ -1,0 +1,191 @@
+Building configuration...
+
+Current configuration : 2776 bytes
+!
+! Last configuration change at 14:42:59 MSK Fri Nov 3 2023
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R32
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$CO4.$ynva6VfpgyjSjyN79rZ4a0
+!
+no aaa new-model
+clock timezone MSK 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!         
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+key chain EIGRP-KEY
+ key 1
+  key-string 7 130E120B0E0503383B
+!
+!
+!         
+!
+!
+!
+!
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description == FOR MGMT ==
+ ip address 10.20.0.4 255.255.255.255
+ ipv6 address FE80::4 link-local
+ ipv6 address 2001:BBBB::4/128
+ ipv6 enable
+!
+interface Ethernet0/0
+ description == link to R16 == 
+ ip address 10.20.0.107 255.255.255.254
+ ipv6 address FE80::6B link-local
+ ipv6 address 2001:BBBB::6B/127
+ ipv6 enable
+ bfd interval 50 min_rx 50 multiplier 3
+!
+interface Ethernet0/1
+ description == link to R17 == 
+ ip address 10.20.0.119 255.255.255.254
+ ipv6 address FE80::77 link-local
+ ipv6 address 2001:BBBB::77/127
+ ipv6 enable
+ bfd interval 50 min_rx 50 multiplier 3
+!
+interface Ethernet0/2
+ no ip address
+ shutdown
+!         
+interface Ethernet0/3
+ no ip address
+ shutdown
+!
+!
+router eigrp SPB
+ !
+ address-family ipv4 unicast autonomous-system 20
+  !
+  af-interface default
+   authentication mode md5
+   authentication key-chain EIGRP-KEY
+   bfd
+   hello-interval 1
+   hold-time 3
+   passive-interface
+  exit-af-interface
+  !
+  af-interface Loopback0
+   no passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/0
+   no passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/1
+   no passive-interface
+  exit-af-interface
+  !
+  topology base
+  exit-af-topology
+  network 10.20.0.0 0.0.255.255
+  network 10.20.0.4 0.0.0.0
+  eigrp router-id 10.20.0.4
+ exit-address-family
+ !
+ address-family ipv6 unicast autonomous-system 20
+  !
+  af-interface default
+   authentication mode md5
+   authentication key-chain EIGRP-KEY
+   bfd
+   hello-interval 1
+   hold-time 3
+   passive-interface
+  exit-af-interface
+  !
+  af-interface Loopback0
+   no passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/0
+   no passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/1
+   no passive-interface
+  exit-af-interface
+  !
+  topology base
+  exit-af-topology
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+banner motd ^CThis is a secure system. Authorized Access Only!^C
+!
+line con 0
+ exec-timeout 0 0
+ password 7 121A0C041104
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 13061E010803
+ logging synchronous
+ login    
+ transport input all
+!
+!
+end

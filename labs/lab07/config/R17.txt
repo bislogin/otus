@@ -1,0 +1,255 @@
+Building configuration...
+
+Current configuration : 4038 bytes
+!
+! Last configuration change at 14:48:29 MSK Fri Nov 3 2023
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R17
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$FWjG$c6QjlUrw3RrokoWSBD.nZ/
+!
+aaa new-model
+!
+!
+!
+!
+!
+!         
+!
+aaa session-id common
+clock timezone MSK 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+key chain EIGRP-KEY
+ key 1
+  key-string 7 1212000E17020B163A
+!
+!
+!
+!
+!
+!
+!
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!         
+!
+!
+!
+!
+!
+interface Loopback0
+ description == FOR MGMT ==
+ ip address 10.20.0.2 255.255.255.255
+ ipv6 address FE80::2 link-local
+ ipv6 address 2001:BBBB::2/128
+ ipv6 enable
+!
+interface Ethernet0/0
+ description == link to SW9 == 
+ ip address 10.20.0.108 255.255.255.254
+ ipv6 address FE80::6C link-local
+ ipv6 address 2001:BBBB::6C/127
+ ipv6 enable
+ bfd interval 50 min_rx 50 multiplier 3
+!
+interface Ethernet0/1
+ description == link to R18 == 
+ ip address 10.20.0.110 255.255.255.254
+ ipv6 address FE80::6E link-local
+ ipv6 address 2001:BBBB::6E/127
+ ipv6 enable
+ bfd interval 50 min_rx 50 multiplier 3
+!
+interface Ethernet0/2
+ description == link to SW10 == 
+ ip address 10.20.0.112 255.255.255.254
+ ipv6 address FE80::70 link-local
+ ipv6 address 2001:BBBB::70/127
+ ipv6 enable
+ bfd interval 50 min_rx 50 multiplier 3
+!
+interface Ethernet0/3
+ description == link to R32 == 
+ ip address 10.20.0.118 255.255.255.254
+ ipv6 address FE80::76 link-local
+ ipv6 address 2001:BBBB::76/127
+ ipv6 enable
+ bfd interval 50 min_rx 50 multiplier 3
+!
+interface Ethernet1/0
+ description == link to R16 == 
+ ip address 10.20.0.120 255.255.255.254
+ ipv6 address FE80::78 link-local
+ ipv6 address 2001:BBBB::78/127
+ ipv6 enable
+ bfd interval 50 min_rx 50 multiplier 3
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+!
+router eigrp SPB
+ !
+ address-family ipv4 unicast autonomous-system 20
+  !
+  af-interface default
+   authentication mode md5
+   authentication key-chain EIGRP-KEY
+   bfd
+   hello-interval 1
+   hold-time 3
+   passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/0
+   no passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/1
+   summary-address 10.20.0.0 255.255.0.0
+   no passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/2
+   no passive-interface
+  exit-af-interface
+  !
+  af-interface Loopback0
+   no passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/3
+   summary-address 0.0.0.0 0.0.0.0
+   no passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet1/0
+   no passive-interface
+  exit-af-interface
+  !
+  topology base
+  exit-af-topology
+  network 10.20.0.0 0.0.255.255
+  network 10.20.0.2 0.0.0.0
+  eigrp router-id 10.20.0.2
+ exit-address-family
+ !
+ address-family ipv6 unicast autonomous-system 20
+  !
+  af-interface default
+   authentication mode md5
+   authentication key-chain EIGRP-KEY
+   bfd    
+   hello-interval 1
+   hold-time 3
+   passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/0
+   no passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/1
+   summary-address 2001:BBBB::/64
+   no passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/2
+   no passive-interface
+  exit-af-interface
+  !
+  af-interface Loopback0
+   no passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/3
+   summary-address ::/0
+   no passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet1/0
+   no passive-interface
+  exit-af-interface
+  !
+  topology base
+  exit-af-topology
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+!
+!         
+control-plane
+!
+!
+!
+!
+!
+!
+banner motd ^CThis is a secure system. Authorized Access Only!^C
+!
+line con 0
+ exec-timeout 0 0
+ password 7 1511021F0725
+ logging synchronous
+line aux 0
+line vty 0 4
+ password 7 1511021F0725
+ logging synchronous
+ transport input all
+!
+!
+end
