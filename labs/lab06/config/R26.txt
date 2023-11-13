@@ -78,8 +78,7 @@ interface Ethernet0/0
  ipv6 address FE80::69 link-local
  ipv6 address 2001:DDDD::69/127
  ipv6 enable
- ipv6 router isis 
- isis network point-to-point 
+ ipv6 router isis
 !
 interface Ethernet0/1
  description == link to R28 == 
@@ -95,8 +94,7 @@ interface Ethernet0/2
  ipv6 address FE80::5B link-local
  ipv6 address 2001:DDDD::5B/127
  ipv6 enable
- ipv6 router isis 
- isis network point-to-point 
+ ipv6 router isis
 !
 interface Ethernet0/3
  description == link to R18 == 
