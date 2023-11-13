@@ -68,8 +68,6 @@ interface Loopback0
  ip router isis 
  ipv6 address FE80::3 link-local
  ipv6 address 2001:DDDD::3/128
- --More-- 
-*Nov 13 14:40:28.031: %SYS-5-CONFIG_I: Configured from console by console
  ipv6 enable
  ipv6 router isis 
 !
@@ -96,8 +94,7 @@ interface Ethernet0/2
  ipv6 address FE80::5A link-local
  ipv6 address 2001:DDDD::5A/127
  ipv6 enable
- ipv6 router isis 
- isis network point-to-point 
+ ipv6 router isis
 !
 interface Ethernet0/3
  description == link to R28 == 
