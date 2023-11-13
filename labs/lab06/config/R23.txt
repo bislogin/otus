@@ -94,8 +94,7 @@ interface Ethernet0/2
  ipv6 address FE80::66 link-local
  ipv6 address 2001:DDDD::66/127
  ipv6 enable
- ipv6 router isis 
- isis network point-to-point 
+ ipv6 router isis  
 !
 interface Ethernet0/3
  no ip address
