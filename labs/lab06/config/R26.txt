@@ -1,0 +1,159 @@
+Building configuration...
+
+Current configuration : 2255 bytes
+!
+! Last configuration change at 11:44:33 MSK Mon Nov 13 2023
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R26
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$bPmk$dmHEVnyGfCFPmCAF1LIIm/
+!
+no aaa new-model
+clock timezone MSK 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!         
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!         
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description == FOR MGMT == 
+ ip address 10.40.0.4 255.255.255.255
+ ip router isis 
+ ipv6 address FE80::4 link-local
+ ipv6 address 2001:DDDD::4/128
+ ipv6 enable
+ ipv6 router isis 
+!
+interface Ethernet0/0
+ description == link to R24 == 
+ ip address 10.40.0.105 255.255.255.254
+ ip router isis 
+ ipv6 address FE80::69 link-local
+ ipv6 address 2001:DDDD::69/127
+ ipv6 enable
+ ipv6 router isis 
+ isis network point-to-point 
+!
+interface Ethernet0/1
+ description == link to R28 == 
+ ip address 100.100.30.2 255.255.255.252
+ ipv6 address FE80::DC1 link-local
+ ipv6 address 2001:CCCC:1:CCD1::2/64
+ ipv6 enable
+!
+interface Ethernet0/2
+ description == link to R25 == 
+ ip address 10.40.0.107 255.255.255.254
+ ip router isis 
+ ipv6 address FE80::5B link-local
+ ipv6 address 2001:DDDD::5B/127
+ ipv6 enable
+ ipv6 router isis 
+ isis network point-to-point 
+!
+interface Ethernet0/3
+ description == link to R18 == 
+ ip address 100.100.22.2 255.255.255.252
+ ipv6 address FE80::DB2 link-local
+ ipv6 address 2001:BBBB:BBD2::2/64
+ ipv6 enable
+!
+interface Ethernet1/0
+ no ip address
+ shutdown
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+router isis
+ net 49.0026.0100.4000.0004.00
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 0.0.0.0 0.0.0.0 100.100.30.1
+!
+!
+!
+!
+control-plane
+!
+!
+!         
+!
+!
+!
+banner motd ^CThis is a secure system. Authorized Access Only!^C
+!
+line con 0
+ exec-timeout 0 0
+ password 7 094F471A1A0A
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 05080F1C2243
+ logging synchronous
+ login
+ transport input all
+!
+!
+end
