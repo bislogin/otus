@@ -1,0 +1,190 @@
+Building configuration...
+
+Current configuration : 3257 bytes
+!
+! Last configuration change at 11:10:11 MSK Sat Nov 18 2023
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R23
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$PNlU$QnHlauECBUVllvbzRIP4q0
+!
+no aaa new-model
+clock timezone MSK 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!         
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!         
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description == FOR MGMT == 
+ ip address 10.40.0.1 255.255.255.255
+ ip router isis 
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DDDD::1/128
+ ipv6 enable
+ ipv6 router isis 
+!
+interface Ethernet0/0
+ description == link to R22 ==
+ ip address 100.100.40.1 255.255.255.252
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DDDD:DDFF::1/64
+ ipv6 enable
+!
+interface Ethernet0/1
+ description == link to R25 == 
+ ip address 10.40.0.100 255.255.255.254
+ ip router isis 
+ ipv6 address FE80::64 link-local
+ ipv6 address 2001:DDDD::64/127
+ ipv6 enable
+ ipv6 router isis 
+!
+interface Ethernet0/2
+ description == link to R24 == 
+ ip address 10.40.0.102 255.255.255.254
+ ip router isis 
+ ipv6 address FE80::66 link-local
+ ipv6 address 2001:DDDD::66/127
+ ipv6 enable
+ ipv6 router isis 
+!
+interface Ethernet0/3
+ no ip address
+ shutdown
+!
+interface Ethernet1/0
+ no ip address
+ shutdown
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown 
+!
+router isis
+ net 49.2222.0100.4000.0001.00
+!
+router bgp 520
+ bgp router-id 10.40.0.1
+ bgp log-neighbor-changes
+ neighbor 10.40.0.101 remote-as 520
+ neighbor 10.40.0.101 description == BGP to R25
+ neighbor 10.40.0.103 remote-as 520
+ neighbor 10.40.0.103 description == BGP to R24
+ neighbor 2001:DDDD::65 remote-as 520
+ neighbor 2001:DDDD::65 description == IPV6 BGP to R25
+ neighbor 2001:DDDD::67 remote-as 520
+ neighbor 2001:DDDD::67 description == IPV6 BGP to R24
+ neighbor 2001:DDDD:DDFF::2 remote-as 101
+ neighbor 2001:DDDD:DDFF::2 description == IPV6 BGP to ISP Kitorn
+ neighbor 100.100.40.2 remote-as 101
+ neighbor 100.100.40.2 description == BGP to ISP Kitorn
+ !
+ address-family ipv4
+  network 10.40.0.0 mask 255.255.0.0
+  network 100.100.40.0 mask 255.255.255.252
+  neighbor 10.40.0.101 activate
+  neighbor 10.40.0.103 activate
+  no neighbor 2001:DDDD::65 activate
+  no neighbor 2001:DDDD::67 activate
+  no neighbor 2001:DDDD:DDFF::2 activate
+  neighbor 100.100.40.2 activate
+ exit-address-family
+ !
+ address-family ipv6
+  network 2001:DDDD::/64
+  network 2001:DDDD:DDFF::/64
+  neighbor 2001:DDDD::65 activate
+  neighbor 2001:DDDD::67 activate
+  neighbor 2001:DDDD:DDFF::2 activate
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 10.40.0.0 255.255.0.0 Null0
+!         
+ipv6 route 2001:DDDD::/64 Null0
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+banner motd ^CThis is a secure system. Authorized Access Only!^C
+!
+line con 0
+ exec-timeout 0 0
+ password 7 121A0C041104
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 110A1016141D
+ logging synchronous
+ login    
+ transport input all
+!
+!
+end

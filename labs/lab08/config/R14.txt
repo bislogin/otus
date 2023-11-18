@@ -1,0 +1,221 @@
+Building configuration...
+
+Current configuration : 4165 bytes
+!
+! Last configuration change at 19:20:48 MSK Fri Nov 17 2023
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R14
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$rK1B$brpMGSSqFr2FG7KQruPuQ.
+!
+no aaa new-model
+clock timezone MSK 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!         
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!         
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description == FOR MGMT ==
+ ip address 10.10.0.3 255.255.255.255
+ ip ospf 1 area 0
+ ipv6 address FE80::3 link-local
+ ipv6 address 2001:AAAA::3/128
+ ipv6 enable
+ ipv6 ospf 1 area 0
+ ipv6 ospf network point-to-point
+!
+interface Ethernet0/0
+ description == link to R12 == 
+ ip address 10.10.0.105 255.255.255.254
+ ip ospf network point-to-point
+ ip ospf 1 area 0
+ ipv6 address FE80::69 link-local
+ ipv6 address 2001:AAAA::69/127
+ ipv6 enable
+ ipv6 ospf 1 area 0
+ ipv6 ospf network point-to-point
+!
+interface Ethernet0/1
+ description == link to R13 == 
+ ip address 10.10.0.115 255.255.255.254
+ ip ospf network point-to-point
+ ip ospf 1 area 0
+ ipv6 address FE80::73 link-local
+ ipv6 address 2001:AAAA::73/127
+ ipv6 enable
+ ipv6 ospf 1 area 0
+ ipv6 ospf network point-to-point
+!
+interface Ethernet0/2
+ description == link to R22 Kitorn == 
+ ip address 100.100.10.1 255.255.255.252
+ ip ospf network point-to-point
+ ipv6 address FE80::AF link-local
+ ipv6 address 2001:AAAA:AAFF::1/64
+ ipv6 enable
+!
+interface Ethernet0/3
+ description == link to R19 == 
+ ip address 10.10.0.116 255.255.255.254
+ ip ospf network point-to-point
+ ip ospf 1 area 0
+ ipv6 address FE80::74 link-local
+ ipv6 address 2001:AAAA::74/127
+ ipv6 enable
+ ipv6 ospf 1 area 0
+ ipv6 ospf network point-to-point
+!
+interface Ethernet1/0
+ description == link to R15 == 
+ ip address 10.10.0.124 255.255.255.254
+ ip ospf network point-to-point
+ ip ospf 1 area 0
+ ipv6 address FE80::7C link-local
+ ipv6 address 2001:AAAA::7C/127
+ ipv6 enable
+ ipv6 ospf 1 area 0
+ ipv6 ospf network point-to-point
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+router ospf 1
+ router-id 10.10.0.3
+ passive-interface default
+ no passive-interface Ethernet0/0
+ no passive-interface Ethernet0/1
+ no passive-interface Ethernet0/3
+ no passive-interface Ethernet1/0
+ no passive-interface Loopback0
+ default-information originate
+!
+router bgp 1001
+ bgp router-id 10.10.0.3
+ bgp log-neighbor-changes
+ neighbor 10.10.0.125 remote-as 1001
+ neighbor 10.10.0.125 description == BGP to R15
+ neighbor 2001:AAAA::7D remote-as 1001
+ neighbor 2001:AAAA::7D description == IPV6 BGP to R15
+ neighbor 2001:AAAA:AAFF::2 remote-as 101
+ neighbor 100.100.10.2 remote-as 101
+ neighbor 100.100.10.2 description == BGP to ISP Kitorn
+ !
+ address-family ipv4
+  network 10.10.0.0 mask 255.255.0.0
+  network 100.100.10.0 mask 255.255.255.252
+  neighbor 10.10.0.125 activate
+  no neighbor 2001:AAAA::7D activate
+  no neighbor 2001:AAAA:AAFF::2 activate
+  neighbor 100.100.10.2 activate
+ exit-address-family
+ !
+ address-family ipv6
+  network 2001:AAAA::/64
+  network 2001:AAAA:AAFF::/64
+  neighbor 2001:AAAA::7D activate
+  neighbor 2001:AAAA:AAFF::2 activate
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 0.0.0.0 0.0.0.0 100.100.10.2 name "def to Triada"
+ip route 10.10.0.0 255.255.0.0 Null0
+!
+ipv6 route 2001:AAAA::/64 Null0
+ipv6 route ::/0 2001:AAAA:AAFF::2
+ipv6 router ospf 1
+ router-id 10.10.0.3
+ default-information originate
+ passive-interface default
+ no passive-interface Ethernet0/0
+ no passive-interface Ethernet0/1
+ no passive-interface Ethernet0/3
+ no passive-interface Ethernet1/0
+ no passive-interface Loopback0
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+banner motd ^CThis is a secure system. Authorized Access Only!^C
+!
+line con 0
+ exec-timeout 0 0
+ password 7 121A0C041104
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 13061E010803
+ logging synchronous
+ login
+ transport input all
+!
+!
+end
