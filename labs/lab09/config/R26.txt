@@ -1,0 +1,206 @@
+Building configuration...
+
+Current configuration : 5336 bytes
+!
+! Last configuration change at 12:20:24 MSK Tue Dec 12 2023
+!
+version 15.9
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R26
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$bPmk$dmHEVnyGfCFPmCAF1LIIm/
+!
+no aaa new-model
+!
+!
+!
+clock timezone MSK 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!         
+redundancy
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description == FOR MGMT == 
+ ip address 10.40.0.4 255.255.255.255
+ ip router isis 
+ ipv6 address FE80::4 link-local
+ ipv6 address 2001:DDDD::4/128
+ ipv6 enable
+ ipv6 router isis 
+!
+interface GigabitEthernet0/0
+ description == link to R24 == 
+ ip address 10.40.0.105 255.255.255.254
+ ip router isis 
+ duplex auto
+ speed auto
+ media-type rj45
+ ipv6 address FE80::69 link-local
+ ipv6 address 2001:DDDD::69/127
+ ipv6 enable
+ ipv6 router isis 
+!
+interface GigabitEthernet0/1
+ description == link to R28 == 
+ ip address 100.100.30.2 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+ ipv6 address FE80::DC1 link-local
+ ipv6 address 2001:CCCC:1:CCD1::2/64
+ ipv6 enable
+!
+interface GigabitEthernet0/2
+ description == link to R25 == 
+ ip address 10.40.0.107 255.255.255.254
+ ip router isis 
+ duplex auto
+ speed auto
+ media-type rj45
+ ipv6 address FE80::5B link-local
+ ipv6 address 2001:DDDD::5B/127
+ ipv6 enable
+ ipv6 router isis 
+!
+interface GigabitEthernet0/3
+ description == link to R18 == 
+ ip address 100.100.22.2 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+ ipv6 address FE80::DB2 link-local
+ ipv6 address 2001:BBBB:BBD2::2/64
+ ipv6 enable
+!
+router isis
+ net 49.0026.0100.4000.0004.00
+!
+router bgp 520
+ bgp router-id 10.40.0.4
+ bgp log-neighbor-changes
+ neighbor 10.40.0.104 remote-as 520
+ neighbor 10.40.0.104 description == BGP to R24
+ neighbor 10.40.0.106 remote-as 520
+ neighbor 10.40.0.106 description == BGP to R25
+ neighbor 2001:BBBB:BBD2::1 remote-as 2042
+ neighbor 2001:BBBB:BBD2::1 description == IPV6 BGP to SPB
+ neighbor 2001:DDDD::5A remote-as 520
+ neighbor 2001:DDDD::5A description == IPV6 BGP to R25
+ neighbor 2001:DDDD::68 remote-as 520
+ neighbor 2001:DDDD::68 description == IPV6 BGP to R24
+ neighbor 100.100.22.1 remote-as 2042
+ neighbor 100.100.22.1 description == BGP to SPB
+ !
+ address-family ipv4
+  network 10.40.0.0 mask 255.255.0.0
+  network 100.100.22.0 mask 255.255.255.252
+  network 100.100.30.0 mask 255.255.255.252
+  neighbor 10.40.0.104 activate
+  neighbor 10.40.0.106 activate
+  no neighbor 2001:BBBB:BBD2::1 activate
+  no neighbor 2001:DDDD::5A activate
+  no neighbor 2001:DDDD::68 activate
+  neighbor 100.100.22.1 activate
+ exit-address-family
+ !
+ address-family ipv6
+  network 2001:BBBB:BBD2::/64
+  network 2001:CCCC:1:CCD1::/64
+  network 2001:DDDD::/64
+  neighbor 2001:BBBB:BBD2::1 activate
+  neighbor 2001:DDDD::5A activate
+  neighbor 2001:DDDD::68 activate
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+ip route 0.0.0.0 0.0.0.0 100.100.30.1
+ip route 10.40.0.0 255.255.0.0 Null0
+!
+ipv6 route 2001:DDDD::/64 Null0
+ipv6 ioam timestamp
+!
+!
+!
+control-plane
+!
+banner exec ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner incoming ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner login ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner motd ^CCThis is a secure system. Authorized Access Only!^C
+!
+line con 0
+ exec-timeout 0 0
+ password 7 094F471A1A0A
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 05080F1C2243
+ logging synchronous
+ login
+ transport input all
+!
+no scheduler allocate
+!
+end

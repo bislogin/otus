@@ -1,0 +1,227 @@
+Building configuration...
+
+Current configuration : 6255 bytes
+!
+! Last configuration change at 12:45:57 MSK Tue Dec 12 2023
+!
+version 15.9
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R24
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$jzin$Lk6e9oTpC/MXBZOVF0wMI1
+!
+no aaa new-model
+!
+!
+!
+clock timezone MSK 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!         
+redundancy
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description == FOR MGMT == 
+ ip address 10.40.0.2 255.255.255.255
+ ip router isis 
+ ipv6 address FE80::2 link-local
+ ipv6 address 2001:DDDD::2/128
+ ipv6 enable
+ ipv6 router isis 
+!
+interface GigabitEthernet0/0
+ description == link to R21 == 
+ ip address 100.100.40.5 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+ ipv6 address FE80::5 link-local
+ ipv6 address 2001:DDDD:DDEE:1::5/64
+ ipv6 enable
+!
+interface GigabitEthernet0/1
+ description == link to R26 == 
+ ip address 10.40.0.104 255.255.255.254
+ ip router isis 
+ duplex auto
+ speed auto
+ media-type rj45
+ ipv6 address FE80::68 link-local
+ ipv6 address 2001:DDDD::68/127
+ ipv6 enable
+ ipv6 router isis 
+!
+interface GigabitEthernet0/2
+ description == link to R23 == 
+ ip address 10.40.0.103 255.255.255.254
+ ip router isis 
+ duplex auto
+ speed auto
+ media-type rj45
+ ipv6 address FE80::67 link-local
+ ipv6 address 2001:DDDD::67/127
+ ipv6 enable
+ ipv6 router isis 
+!
+interface GigabitEthernet0/3
+ description == link to R18 == 
+ ip address 100.100.21.2 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+ ipv6 address FE80::DB2 link-local
+ ipv6 address 2001:BBBB:BBD1::2/64
+ ipv6 enable
+!
+router isis
+ net 49.0024.0100.4000.0002.00
+!
+router bgp 520
+ bgp router-id 10.40.0.2
+ bgp log-neighbor-changes
+ neighbor 10.40.0.3 remote-as 520
+ neighbor 10.40.0.3 description == BGP to R25
+ neighbor 10.40.0.3 update-source Loopback0
+ neighbor 10.40.0.102 remote-as 520
+ neighbor 10.40.0.102 description == BGP to R23
+ neighbor 10.40.0.105 remote-as 520
+ neighbor 10.40.0.105 description == BGP to R26
+ neighbor 2001:BBBB:BBD1::1 remote-as 2042
+ neighbor 2001:BBBB:BBD1::1 description == IPV6 BGP to SPB
+ neighbor 2001:DDDD::3 remote-as 520
+ neighbor 2001:DDDD::3 description == IPV6 BGP to R25
+ neighbor 2001:DDDD::3 update-source Loopback0
+ neighbor 2001:DDDD::66 remote-as 520
+ neighbor 2001:DDDD::66 description == IPV6 BGP to R23
+ neighbor 2001:DDDD::69 remote-as 520
+ neighbor 2001:DDDD::69 description == IPV6 BGP to R26
+ neighbor 2001:DDDD:DDEE:1::6 remote-as 301
+ neighbor 2001:DDDD:DDEE:1::6 description == IPV6 BGP to ISP Lamas
+ neighbor 100.100.21.1 remote-as 2042
+ neighbor 100.100.21.1 description == BGP to SPB
+ neighbor 100.100.40.6 remote-as 301
+ neighbor 100.100.40.6 description == BGP to ISP Lamas
+ !
+ address-family ipv4
+  network 10.40.0.0 mask 255.255.0.0
+  network 100.100.21.0 mask 255.255.255.252
+  network 100.100.40.4 mask 255.255.255.252
+  neighbor 10.40.0.3 activate
+  neighbor 10.40.0.3 route-reflector-client
+  neighbor 10.40.0.102 activate
+  neighbor 10.40.0.102 route-reflector-client
+  neighbor 10.40.0.105 activate
+  neighbor 10.40.0.105 route-reflector-client
+  no neighbor 2001:BBBB:BBD1::1 activate
+  no neighbor 2001:DDDD::3 activate
+  no neighbor 2001:DDDD::66 activate
+  no neighbor 2001:DDDD::69 activate
+  no neighbor 2001:DDDD:DDEE:1::6 activate
+  neighbor 100.100.21.1 activate
+  neighbor 100.100.40.6 activate
+ exit-address-family
+ !
+ address-family ipv6
+  network 2001:BBBB:BBD1::/64
+  network 2001:DDDD::/64
+  network 2001:DDDD:DDEE:1::/64
+  neighbor 2001:BBBB:BBD1::1 activate
+  neighbor 2001:DDDD::3 activate
+  neighbor 2001:DDDD::3 route-reflector-client
+  neighbor 2001:DDDD::66 activate
+  neighbor 2001:DDDD::66 route-reflector-client
+  neighbor 2001:DDDD::69 activate
+  neighbor 2001:DDDD::69 route-reflector-client
+  neighbor 2001:DDDD:DDEE:1::6 activate
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+ip route 10.40.0.0 255.255.0.0 Null0
+!
+ipv6 route 2001:DDDD::/64 Null0
+ipv6 ioam timestamp
+!
+!
+!
+control-plane
+!
+banner exec ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner incoming ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner login ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner motd ^CCThis is a secure system. Authorized Access Only!^C
+!
+line con 0
+ exec-timeout 0 0
+ password 7 121A0C041104
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 070C285F4D06
+ logging synchronous
+ login
+ transport input all
+!
+no scheduler allocate
+!
+end
