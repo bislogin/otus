@@ -122,7 +122,7 @@ Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State
 10.40.0.100     4          520       0       0        1    0    0 never    Idle (Admin)
 10.40.0.107     4          520       0       0        1    0    0 never    Idle (Admin)
 ```
-Посмотрим таблице BGP
+Посмотрим таблицу BGP
 ```
 R25#show ip bgp 
 BGP table version is 40, local router ID is 10.40.0.3
@@ -154,7 +154,7 @@ RPKI validation codes: V valid, I invalid, N Not found
 Видим, что мы получаем от RR все маршруты, от AS 101,301,1001 и 2042.
 
 #### 3. Настройте офиса Москва так, чтобы приоритетным провайдером стал Ламас.
-Увеличим значение local-preference на 150 на взодящий трафик с провайдера Ламас.   
+Увеличим значение local-preference на 150 на входящий трафик с провайдера Ламас.   
 Создадим route-map:
 ```
 R15(config)#route-map LP150 permit 10 
