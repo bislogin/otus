@@ -228,6 +228,8 @@ Total number of prefixes 1
 ```
 
 #### 4. Настроить провайдера Ламас так, чтобы в офис Москва отдавался только маршрут по умолчанию и префикс офиса С.-Петербург.
+
+##### 1 способ
 Создадим prefix-list, в котором разрешим передачу маршрута по умолчанию и суммарного префикса от офиса С.-Петербург:
 ```
 ip prefix-list MSK-out seq 10 permit 0.0.0.0/0
@@ -319,4 +321,26 @@ RPKI validation codes: V valid, I invalid, N Not found
                                                      150      0 301 520 2042 i
 
 Total number of prefixes 2 
+```
+
+##### 2 способ
+
+Создадим as-path access-list в котором разрешим только маршруты, отправленнýе из AS СПБ.
+
+```
+ip as-path access-list 1 permit _2042$
+ip as-path access-list 1 deny .*
+```
+
+Применим к соседу:
+```
+router bgp 301
+ !
+ address-family ipv4
+  neighbor 100.100.11.1 filter-list 1 out
+ exit-address-family
+ !
+ address-family ipv6
+  neighbor 2001:AAAA:AAEE::1 filter-list 1 out
+ exit-address-family
 ```
