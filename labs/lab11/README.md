@@ -302,7 +302,7 @@ ipv6 dhcp pool ipv6_user7
  address prefix 2001:AAAA::70:0/112 lifetime 3600 10
 ```
 
-Для ipv6 на int vlan добавим настройки получения адреса по dhcp и нащначим пул
+Для ipv6 на int vlan добавим настройки получения адреса по dhcp и назначим пул
 ```
 interface Vlan10
  ipv6 nd managed-config-flag
