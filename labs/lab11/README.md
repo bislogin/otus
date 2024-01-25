@@ -278,7 +278,170 @@ R28#
 ```
 
 ##### 5. Настроите для IPv4 DHCP сервер в офисе Москва на маршрутизаторах R12 и R13. VPC1 и VPC7 должны получать сетевые настройки по DHCP.  
+В связи с особенностями построения сети, все настройки будут проводится на SW4 и SW5.   
 
+Настройки на SW4   
+Добавим исключения для пулов   
+```
+ip dhcp excluded-address 172.10.10.248 255.255.255.248
+ip dhcp excluded-address 172.10.70.248 255.255.255.248
+ip dhcp excluded-address 172.10.10.125 172.10.10.254
+ip dhcp excluded-address 172.10.70.125 172.10.70.254
+```
+Создалим pool для пользовательских сетей
+```
+ip dhcp pool user
+ network 172.10.10.0 255.255.255.0
+ default-router 172.10.10.254 
+ip dhcp pool user7
+ network 172.10.70.0 255.255.255.0
+ default-router 172.10.70.254 
+ipv6 dhcp pool ipv6_user
+ address prefix 2001:AAAA::10:0/112 lifetime 3600 10
+ipv6 dhcp pool ipv6_user7
+ address prefix 2001:AAAA::70:0/112 lifetime 3600 10
+```
 
+Для ipv6 на int vlan добавим настройки получения адреса по dhcp и нащначим пул
+```
+interface Vlan10
+ ipv6 nd managed-config-flag
+ ipv6 dhcp server ipv6_user
+```
+```
+interface Vlan70
+ ipv6 nd managed-config-flag
+ ipv6 dhcp server ipv6_user7
+```
+Для проверки заменим VPC на роутер, и настроим получения адреса по DHCP
+```
+interface Ethernet0/0
+ ip address dhcp
+ ipv6 address dhcp
+ ipv6 enable
+```
+```
+VPC#show ip int br
+Interface                  IP-Address      OK? Method Status                Protocol
+Ethernet0/0                172.10.10.1     YES DHCP   up                    up      
+Ethernet0/1                unassigned      YES NVRAM  administratively down down    
+Ethernet0/2                unassigned      YES NVRAM  administratively down down    
+Ethernet0/3                unassigned      YES NVRAM  administratively down down    
+VPC#show ipv6 int br
+Ethernet0/0            [up/up]
+    FE80::A8BB:CCFF:FE00:1000
+    2001:AAAA::10:3846
+Ethernet0/1            [administratively down/down]
+    unassigned
+Ethernet0/2            [administratively down/down]
+    unassigned
+Ethernet0/3            [administratively down/down]
+    unassigned
+VPC#
+```
+
+Проверим, что адреса назначены в таблице dhcp binding
+```
+SW4(config)#do show ip dhcp binding 
+Bindings from all pools not associated with VRF:
+IP address      Client-ID/              Lease expiration        Type       State      Interface
+                Hardware address/
+                User name
+172.10.10.1     0063.6973.636f.2d61.    Jan 26 2024 11:57 AM    Automatic  Active     Vlan10
+                6162.622e.6363.3030.
+                2e31.3030.302d.4574.
+                302f.30
+```
+```
+SW5(config)#do show ipv6 dhcp binding 
+Client: FE80::A8BB:CCFF:FE00:1000 
+  DUID: 00030001AABBCC001000
+  IA NA: IA ID 0x00030001, T1 5, T2 8
+    Address: 2001:AAAA::10:3846
+            preferred lifetime 10, valid lifetime 3600
+            expires at Jan 25 2024 12:59 PM (3597 seconds)
+```
+Видим, что ipv4 получен на sw4, а ipv6 адрес получен с sw5.   
 
 ##### 6. Настроите NTP сервер на R12 и R13. Все устройства в офисе Москва должны синхронизировать время с R12 и R13.  
+
+Настройка для сервера ntp
+R12
+```
+ntp source Loopback0
+ntp master 5
+ntp peer 10.10.0.2
+```
+R13
+```
+ntp source Loopback0
+ntp master 5
+ntp peer 10.10.0.1
+```
+Настройки для всех остальных
+```
+ntp source Loopback0
+ntp update-calendar
+ntp server 10.10.0.1
+ntp server 10.10.0.2
+```
+
+Проверка на сервере
+```
+R12#show ntp status 
+Clock is synchronized, stratum 5, reference is 127.127.1.1    
+nominal freq is 250.0000 Hz, actual freq is 250.0000 Hz, precision is 2**10
+ntp uptime is 6997100 (1/100 of seconds), resolution is 4000
+reference time is E95CC025.27EF9E20 (14:10:29.156 MSK Thu Jan 25 2024)
+clock offset is 0.0000 msec, root delay is 0.00 msec
+root dispersion is 2.25 msec, peer dispersion is 1.20 msec
+loopfilter state is 'CTRL' (Normal Controlled Loop), drift is 0.000000000 s/s
+system poll interval is 16, last update was 5 sec ago.
+R12#show ntp ass    
+R12#show ntp associations 
+
+  address         ref clock       st   when   poll reach  delay  offset   disp
+*~127.127.1.1     .LOCL.           4      9     16   377  0.000   0.000  1.204
+ ~10.10.0.2       127.127.1.1      5     40     64   376  1.000  -0.500  3.450
+ * sys.peer, # selected, + candidate, - outlyer, x falseticker, ~ configured
+R12#
+```
+Проверка на роутере
+```
+R15#show ntp status 
+Clock is synchronized, stratum 6, reference is 10.10.0.1      
+nominal freq is 250.0000 Hz, actual freq is 250.0000 Hz, precision is 2**10
+ntp uptime is 7002200 (1/100 of seconds), resolution is 4000
+reference time is E95CC04A.195810A8 (14:11:06.099 MSK Thu Jan 25 2024)
+clock offset is 0.0000 msec, root delay is 0.00 msec
+root dispersion is 5.55 msec, peer dispersion is 1.99 msec
+loopfilter state is 'CTRL' (Normal Controlled Loop), drift is -0.000000001 s/s
+system poll interval is 1024, last update was 24 sec ago.
+R15#show ntp ass    
+R15#show ntp associations 
+
+  address         ref clock       st   when   poll reach  delay  offset   disp
+*~10.10.0.1       127.127.1.1      5     30   1024   377  0.000   0.000  1.994
++~10.10.0.2       127.127.1.1      5    552   1024   377  0.000   0.000  2.013
+ * sys.peer, # selected, + candidate, - outlyer, x falseticker, ~ configured
+R15#
+```
+Проверка на коммутаторе
+```
+SW3#show ntp status 
+Clock is synchronized, stratum 6, reference is 10.10.0.2      
+nominal freq is 250.0000 Hz, actual freq is 250.0000 Hz, precision is 2**10
+ntp uptime is 7032800 (1/100 of seconds), resolution is 4000
+reference time is E95CC186.C872B248 (14:16:22.783 MSK Thu Jan 25 2024)
+clock offset is 0.5000 msec, root delay is 2.00 msec
+root dispersion is 7941.93 msec, peer dispersion is 189.47 msec
+loopfilter state is 'CTRL' (Normal Controlled Loop), drift is 0.000000000 s/s
+system poll interval is 64, last update was 11 sec ago.
+SW3#show ntp ass    
+SW3#show ntp associations 
+
+  address         ref clock       st   when   poll reach  delay  offset   disp
+ ~10.10.0.1       127.127.1.1      5      5     64     1  1.000   0.500 189.47
+*~10.10.0.2       127.127.1.1      5      5     64     1  1.000   0.500 189.47
+ * sys.peer, # selected, + candidate, - outlyer, x falseticker, ~ configured
+```
