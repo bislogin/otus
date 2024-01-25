@@ -189,9 +189,93 @@ icmp 10.10.10.20:6     10.10.0.6:6        10.30.0.1:6        10.30.0.1:6
 ```
 
 ##### 4. Настроите NAT так, чтобы R19 был доступен с любого узла для удаленного управления.  
+На R15
+```
+ip nat inside source static 10.10.0.5 10.10.10.5
+```
+Добавим анонс в BGP и статический маршрут
+```
+R15(config)#router bgp 1001
+R15(config-router)#address-family ipv4
+R15(config-router-af)#network 10.10.10.5 mask 255.255.255.255
+
+R15(config)#ip route 10.10.10.5 255.255.255.255 null0
+```
+На R19
+```
+line vty 0 4
+ password 7 121A0C041104
+ logging synchronous
+ login
+ transport input all
+```
+Проверим с SW9 в офисе СПБ
+```
+SW9#telnet 10.10.10.5 /source-interface vlan80
+Trying 10.10.10.5 ... Open
+This is a secure system. Authorized Access Only!
+
+User Access Verification
+
+Password: 
+Password: 
+R19>en
+Password: 
+R19#
+R19#exit
+
+[Connection to 10.10.10.5 closed by foreign host]
+SW9#
+```
+Посмотрим на таблицу NAT на R15
+```
+R15#show ip nat translations 
+Pro Inside global      Inside local       Outside local      Outside global
+tcp 10.10.10.5:23      10.10.0.5:23       10.20.0.109:43052  10.20.0.109:43052
+--- 10.10.10.5         10.10.0.5          ---                ---
+--- 10.10.10.20        10.10.0.6          ---                ---
+R15#
+```
 ####     5*. Настроите статический NAT(PAT) для офиса Чокурдах.  
+```
+R28(config)#int lo30
+R28(config-if)#ip address 10.30.30.30 255.255.255.255
+R28(config-if)#ip nat inside 
+R28(config-if)#int e0/2
+R28(config-if)#ip nat inside 
+R28(config-if)#int ran e0/0-1
+R28(config-if-range)#ip nat outside 
+R28(config-if-range)#exit
+R28(config)#
+R28(config)#ip nat inside source list 30 interface lo30 overload 
+R28(config)#ip nat inside source list 31 interface lo30 overload 
+```
+```
+Checking for duplicate address...
+VPCS : 172.10.30.1 255.255.255.0 gateway 172.10.30.254
 
+PC1 : 2001:cccc:1::30:1/112 
 
+VPCS> ping 10.40.0.1
+
+84 bytes from 10.40.0.1 icmp_seq=1 ttl=252 time=4.047 ms
+84 bytes from 10.40.0.1 icmp_seq=2 ttl=252 time=3.624 ms
+84 bytes from 10.40.0.1 icmp_seq=3 ttl=252 time=3.600 ms
+84 bytes from 10.40.0.1 icmp_seq=4 ttl=252 time=3.310 ms
+84 bytes from 10.40.0.1 icmp_seq=5 ttl=252 time=3.529 ms
+
+VPCS>
+```
+```
+R28#show ip nat translations 
+Pro Inside global      Inside local       Outside local      Outside global
+icmp 10.30.30.30:51771 172.10.30.1:51771  10.40.0.1:51771    10.40.0.1:51771
+icmp 10.30.30.30:52027 172.10.30.1:52027  10.40.0.1:52027    10.40.0.1:52027
+icmp 10.30.30.30:52283 172.10.30.1:52283  10.40.0.1:52283    10.40.0.1:52283
+icmp 10.30.30.30:52539 172.10.30.1:52539  10.40.0.1:52539    10.40.0.1:52539
+icmp 10.30.30.30:52795 172.10.30.1:52795  10.40.0.1:52795    10.40.0.1:52795
+R28#
+```
 
 ##### 5. Настроите для IPv4 DHCP сервер в офисе Москва на маршрутизаторах R12 и R13. VPC1 и VPC7 должны получать сетевые настройки по DHCP.  
 
