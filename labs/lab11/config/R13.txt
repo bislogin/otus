@@ -1,0 +1,224 @@
+Building configuration...
+
+Current configuration : 4105 bytes
+!
+! Last configuration change at 11:46:57 MSK Thu Jan 25 2024
+! NVRAM config last updated at 14:48:22 MSK Thu Jan 25 2024
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R13
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$BAlg$Qws5E7smvzdHbCoLF93FK1
+!
+no aaa new-model
+clock timezone MSK 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!         
+!
+!
+!
+!
+!
+!
+!
+redundancy
+bfd-template single-hop BFDT
+ interval min-tx 50 min-rx 50 multiplier 3
+!
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!         
+!
+!
+!
+interface Loopback0
+ description == FOR MGMT == 
+ ip address 10.10.0.2 255.255.255.255
+ ipv6 address FE80::2 link-local
+ ipv6 address 2001:AAAA::2/128
+ ipv6 enable
+ ospfv3 1 network point-to-point
+ ospfv3 1 ipv4 area 0
+ ospfv3 1 ipv6 area 0
+!
+interface Ethernet0/0
+ description == link to SW5 == 
+ ip address 10.10.0.108 255.255.255.254
+ ipv6 address FE80::6C link-local
+ ipv6 address 2001:AAAA::6C/127
+ ipv6 enable
+ ospfv3 1 network point-to-point
+ ospfv3 1 ipv4 area 0
+ ospfv3 1 ipv6 area 0
+ ospfv3 1 ipv6 network point-to-point
+!
+interface Ethernet0/1
+ description == link to SW4 == 
+ ip address 10.10.0.110 255.255.255.254
+ ipv6 address FE80::6E link-local
+ ipv6 address 2001:AAAA::6E/127
+ ipv6 enable
+ ospfv3 1 network point-to-point
+ ospfv3 1 ipv4 area 0
+ ospfv3 1 ipv6 area 0
+ ospfv3 1 ipv6 network point-to-point
+!
+interface Ethernet0/2
+ description == link to R15 == 
+ ip address 10.10.0.112 255.255.255.254
+ ipv6 address FE80::70 link-local
+ ipv6 address 2001:AAAA::70/127
+ ipv6 enable
+ ospfv3 1 network point-to-point
+ ospfv3 1 ipv4 area 0
+ ospfv3 1 ipv6 area 0
+ ospfv3 1 ipv6 network point-to-point
+!         
+interface Ethernet0/3
+ description == link to R14 == 
+ ip address 10.10.0.114 255.255.255.254
+ ipv6 address FE80::72 link-local
+ ipv6 address 2001:AAAA::72/127
+ ipv6 enable
+ ospfv3 1 network point-to-point
+ ospfv3 1 ipv4 area 0
+ ospfv3 1 ipv6 area 0
+ ospfv3 1 ipv6 network point-to-point
+!
+interface Ethernet1/0
+ description == link to R12 == 
+ ip address 10.10.0.127 255.255.255.254
+ ipv6 address FE80::7F link-local
+ ipv6 address 2001:AAAA::7F/127
+ ipv6 enable
+ ospfv3 1 network point-to-point
+ ospfv3 1 ipv4 area 0
+ ospfv3 1 ipv6 area 0
+ ospfv3 1 ipv6 network point-to-point
+ bfd interval 50 min_rx 50 multiplier 3
+!         
+interface Ethernet1/1
+ no ip address
+ shutdown
+ bfd interval 50 min_rx 50 multiplier 3
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+router ospfv3 1
+ !
+ address-family ipv4 unicast
+  passive-interface default
+  no passive-interface Ethernet0/0
+  no passive-interface Ethernet0/1
+  no passive-interface Ethernet0/2
+  no passive-interface Ethernet0/3
+  no passive-interface Ethernet1/0
+  no passive-interface Loopback0
+  router-id 10.10.0.2
+ exit-address-family
+ !
+ address-family ipv6 unicast
+  passive-interface default
+  no passive-interface Ethernet0/0
+  no passive-interface Ethernet0/1
+  no passive-interface Ethernet0/2
+  no passive-interface Ethernet0/3
+  no passive-interface Ethernet1/0
+  no passive-interface Loopback0
+  router-id 10.10.0.2
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+access-list 1500 permit 10.10.0.0 0.0.255.255
+access-list 1500 permit 172.10.10.0 0.0.0.255
+access-list 1500 permit 172.10.70.0 0.0.0.255
+access-list 1500 permit 77.77.77.0 0.0.0.255
+access-list 1500 deny   any
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+privilege dhcp level 15 lease
+privilege dhcp level 15 host
+privilege dhcp level 15 hardware-address
+privilege dhcp level 15 client-identifier
+banner motd ^CThis is a secure system. Authorized Access Only!^C
+!
+line con 0
+ exec-timeout 0 0
+ password 7 045802150C2E
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 0822455D0A16
+ logging synchronous
+ login
+ transport input none
+!
+ntp source Loopback0
+ntp access-group peer 1500
+ntp access-group serve-only 1500
+ntp master 5
+ntp peer 10.10.0.1
+!
+end

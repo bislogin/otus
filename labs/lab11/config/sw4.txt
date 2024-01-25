@@ -1,0 +1,261 @@
+Building configuration...
+
+Current configuration : 5443 bytes
+!
+! Last configuration change at 13:53:52 MSK Thu Jan 25 2024
+! NVRAM config last updated at 14:46:02 MSK Thu Jan 25 2024
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service compress-config
+!
+hostname SW4
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$Ldx0$1yHU9v/b02bQFDpYJ45xQ0
+!
+no aaa new-model
+clock timezone MSK 3 0
+fhrp version vrrp v3
+!         
+!
+!
+!
+!
+vtp mode transparent
+!
+ip dhcp excluded-address 172.10.10.248 255.255.255.248
+ip dhcp excluded-address 172.10.70.248 255.255.255.248
+ip dhcp excluded-address 172.10.10.125 172.10.10.254
+ip dhcp excluded-address 172.10.70.125 172.10.70.254
+!
+ip dhcp pool user
+ network 172.10.10.0 255.255.255.0
+ default-router 172.10.10.254 
+!
+ip dhcp pool user7
+ network 172.10.70.0 255.255.255.0
+ default-router 172.10.70.254 
+!
+!
+no ip domain-lookup
+ip cef
+ipv6 unicast-routing
+ipv6 dhcp pool ipv6_user
+ address prefix 2001:AAAA::10:0/112 lifetime 3600 10
+!
+ipv6 dhcp pool ipv6_user7
+ address prefix 2001:AAAA::70:0/112 lifetime 3600 10
+!
+ipv6 cef
+!
+!
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+bfd-template single-hop BFDT
+ interval min-tx 50 min-rx 50 multiplier 3
+!
+!
+vlan internal allocation policy ascending
+!
+vlan 10
+ name user1
+!
+vlan 70
+ name user7
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description == FOR MGMT ==
+ ip address 10.10.0.9 255.255.255.255
+ ipv6 address FE80::9 link-local
+ ipv6 address 2001:AAAA::9/128
+ ipv6 enable
+ ospfv3 1 network point-to-point
+ ospfv3 1 ipv4 area 0
+ ospfv3 1 ipv6 area 0
+ ospfv3 1 ipv6 network point-to-point
+!
+interface Port-channel1
+ switchport trunk allowed vlan 10,70,77
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface Ethernet0/0
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface Ethernet0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface Ethernet0/2
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ channel-group 1 mode active
+!
+interface Ethernet0/3
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ channel-group 1 mode active
+!
+interface Ethernet1/0
+ description == link to R12 == 
+ no switchport
+ ip address 10.10.0.101 255.255.255.254
+ ip helper-address 10.10.0.1
+ no ip redirects
+ duplex auto
+ ipv6 address FE80::65 link-local
+ ipv6 address 2001:AAAA::65/127
+ ipv6 enable
+ ospfv3 1 network point-to-point
+ ospfv3 1 ipv4 area 0
+ ospfv3 1 ipv6 area 0
+ ospfv3 1 ipv6 network point-to-point
+ bfd interval 50 min_rx 50 multiplier 3
+!
+interface Ethernet1/1
+ description == link to R13 == 
+ no switchport
+ ip address 10.10.0.111 255.255.255.254
+ ip helper-address 10.10.0.2
+ duplex auto
+ ipv6 address FE80::6F link-local
+ ipv6 address 2001:AAAA::6F/127
+ ipv6 enable
+ ospfv3 1 network point-to-point
+ ospfv3 1 ipv4 area 0
+ ospfv3 1 ipv6 area 0
+ ospfv3 1 ipv6 network point-to-point
+ bfd template BFDT
+!
+interface Ethernet1/2
+ shutdown
+!
+interface Ethernet1/3
+ shutdown
+!
+interface Vlan10
+ description == for USER1 ==
+ ip address 172.10.10.252 255.255.255.0
+ standby version 2
+ standby 0 ip 172.10.10.254
+ standby 0 priority 150
+ standby 0 preempt
+ standby 6 ipv6 FE80::10:FE
+ standby 6 ipv6 2001:AAAA::10:FE/112
+ standby 6 priority 150
+ standby 6 preempt
+ ipv6 address FE80::10:FC link-local
+ ipv6 address 2001:AAAA::10:FC/112
+ ipv6 enable
+ ipv6 nd managed-config-flag
+ ipv6 dhcp server ipv6_user
+ ospfv3 1 ipv6 area 0
+ ospfv3 1 ipv4 area 0
+!
+interface Vlan70
+ description == for USER7 ==
+ ip address 172.10.70.252 255.255.255.0
+ standby version 2
+ standby 7 ip 172.10.70.254
+ standby 67 ipv6 2001:AAAA::70:FE/112
+ ipv6 address FE80::70:FC link-local
+ ipv6 address 2001:AAAA::70:FC/112
+ ipv6 enable
+ ipv6 nd managed-config-flag
+ ipv6 dhcp server ipv6_user7
+ ospfv3 1 ipv6 area 0
+ ospfv3 1 ipv4 area 0
+!
+router ospfv3 1
+ router-id 10.10.0.9
+ !
+ address-family ipv4 unicast
+  passive-interface default
+  no passive-interface Ethernet1/0
+  no passive-interface Ethernet1/1
+  no passive-interface Loopback0
+  no passive-interface Vlan10
+  no passive-interface Vlan70
+ exit-address-family
+ !
+ address-family ipv6 unicast
+  passive-interface default
+  no passive-interface Ethernet1/0
+  no passive-interface Ethernet1/1
+  no passive-interface Loopback0
+  no passive-interface Vlan10
+  no passive-interface Vlan70
+  router-id 10.10.0.9
+ exit-address-family
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+ip route static bfd Ethernet1/0 10.10.0.100
+ip route static bfd Ethernet1/1 10.10.0.110
+ip route 0.0.0.0 0.0.0.0 Ethernet1/0 10.10.0.100 254
+ip route 0.0.0.0 0.0.0.0 Ethernet1/1 10.10.0.110 254
+!
+!
+!
+ip prefix-list conn seq 5 permit 172.10.10.0/24
+ip prefix-list conn seq 10 permit 172.10.70.0/24
+access-list 1500 deny   any
+access-list 1501 permit 10.10.0.1
+access-list 1501 permit 10.10.0.2
+access-list 1501 deny   any
+!
+route-map CONN permit 10
+ match ip address prefix-list conn
+!         
+!
+!
+control-plane
+!
+privilege dhcp level 5 lease
+privilege dhcp level 5 host
+privilege dhcp level 5 hardware-address
+privilege dhcp level 5 client-identifier
+banner motd ^CThis is a secure system. Authorized Access Only!^C
+!
+line con 0
+ exec-timeout 0 0
+ password 7 00071A150754
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 1511021F0725
+ logging synchronous
+ login
+!
+ntp source Loopback0
+ntp access-group peer 1501
+ntp access-group serve-only 1500
+ntp update-calendar
+ntp server 10.10.0.1
+ntp server 10.10.0.2
+!
+end
