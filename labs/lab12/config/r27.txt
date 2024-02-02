@@ -1,0 +1,159 @@
+Building configuration...
+
+Current configuration : 2234 bytes
+!
+! Last configuration change at 12:00:36 MSK Sat Jan 27 2024
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R27
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$tfrS$1aF3lZm4Du8uGFtqw1Ua..
+!
+no aaa new-model
+clock timezone MSK 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!         
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!         
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description == FOR MGMT == 
+ ip address 10.35.0.1 255.255.255.255
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:CCCC:2::1/128
+ ipv6 enable
+!         
+interface Loopback235
+ ip address 172.10.35.1 255.255.255.0
+!
+interface Tunnel1030
+ ip address 192.168.30.35 255.255.255.0
+ no ip redirects
+ ip mtu 1400
+ ip nhrp map multicast 10.10.10.100
+ ip nhrp map 192.168.30.1 10.10.10.100
+ ip nhrp network-id 100
+ ip nhrp holdtime 300
+ ip nhrp nhs 192.168.30.1
+ ip nhrp shortcut
+ ip tcp adjust-mss 1360
+ tunnel source Loopback0
+ tunnel mode gre multipoint
+!
+interface Ethernet0/0
+ description == link to R25 == 
+ ip address 100.100.35.1 255.255.255.252
+ ipv6 address FE80::CD1 link-local
+ ipv6 address 2001:CCCC:2:CCDD::1/64
+ ipv6 enable
+!
+interface Ethernet0/1
+ no ip address
+ shutdown
+!
+interface Ethernet0/2
+ no ip address
+ shutdown
+!
+interface Ethernet0/3
+ no ip address
+ shutdown
+!
+interface Ethernet1/0
+ no ip address
+ shutdown
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 0.0.0.0 0.0.0.0 100.100.35.2 name "def v4 to Triada"
+ip route 172.10.10.0 255.255.255.0 Tunnel1030
+ip route 172.10.70.0 255.255.255.0 Tunnel1030
+!
+ipv6 route ::/0 2001:CCCC:2:CCDD::2 name "def v6 to Triada"
+!
+!
+!
+control-plane
+!
+!
+!         
+!
+!
+!
+banner motd ^CThis is a secure system. Authorized Access Only!^C
+!
+line con 0
+ exec-timeout 0 0
+ password 7 01100F175804
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 121A0C041104
+ logging synchronous
+ login
+ transport input all
+!
+!
+end
