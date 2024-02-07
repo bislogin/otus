@@ -1,0 +1,332 @@
+Building configuration...
+
+Current configuration : 8683 bytes
+!
+! Last configuration change at 20:02:24 MSK Tue Feb 6 2024
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R28
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$NPas$47lBEL1xSaSGuUAQayEp..
+!
+no aaa new-model
+clock timezone MSK 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!         
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip domain name Chokyrdah.ru
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!         
+crypto pki trustpoint VPN
+ enrollment url http://192.168.30.1:80
+ revocation-check none
+!
+!
+crypto pki certificate chain VPN
+ certificate 06
+  30820230 30820118 A0030201 02020106 300D0609 2A864886 F70D0101 05050030 
+  0D310B30 09060355 04031302 4341301E 170D3234 30323036 31363336 35375A17 
+  0D323530 32303531 36333635 375A3021 311F301D 06092A86 4886F70D 01090216 
+  10523238 2E43686F 6B797264 61682E72 75305C30 0D06092A 864886F7 0D010101 
+  0500034B 00304802 4100CA1B 06662E2C 27D4E401 E74D8AA4 B4AE495C E70B2AC7 
+  CDB18C4B F5379F2D D28C6184 C10ABC5C 6571F430 2CB6D321 A2A81437 6DD65123 
+  41B4854F 7F3C201A 1E070203 010001A3 4F304D30 0B060355 1D0F0404 030205A0 
+  301F0603 551D2304 18301680 14ED4370 F9D87D01 43309A30 39FA90A9 847C560E 
+  21301D06 03551D0E 04160414 282C5F3F E622B816 A3A00723 23DF5326 3E5EAE5B 
+  300D0609 2A864886 F70D0101 05050003 82010100 38AD1DB5 37BD38D1 DC376FEE 
+  AA1E72A2 C2C93607 09D73939 F52F2C48 D8E4B3D9 3A5C2994 E272523B AC553E9C 
+  5E7AEC71 1D8F1DE4 F01BA330 837CFD10 D2D9DEEF BCD3941B 4AB3F1A4 17CA61EC 
+  66B6FA3E E9910269 91BF4E1E 356D09AB 2F8A0B78 2D531252 E9C7E7C7 3EB7C87F 
+  E689710A BD9A1EF1 1C00092A CDC1C9A3 5EC8FB24 1DE0C271 CBAEDB85 5FCC23B1 
+  753DA6CE 31FDE7B8 F3214D5B E70D0E5B 986C51B6 42ED27BE 02CCF54A E502FEDB 
+  C8FD41CC D67B5185 2F7650A8 DC1C2AF6 A23B93EA CABC2B17 A16B7623 672D989B 
+  5E61583A 052174B0 1CF3879F EF23CD3E E6C22768 0AB22B8C 9FFA2AFF 41B57F1B 
+  63E559D2 B2E7946A 19F8D2C7 3EA46AA3 D1D6AB4B
+        quit
+ certificate ca 01
+  308202F8 308201E0 A0030201 02020101 300D0609 2A864886 F70D0101 04050030 
+  0D310B30 09060355 04031302 4341301E 170D3234 30323036 31343134 34365A17 
+  0D323730 32303531 34313434 365A300D 310B3009 06035504 03130243 41308201 
+  22300D06 092A8648 86F70D01 01010500 0382010F 00308201 0A028201 0100C4CE 
+  FCC34D65 C994A9C6 328895EA 9FE5D7E1 1BFC6AD3 51889CBF EAE197C6 6293A962 
+  AC1113F4 2292657A DD4F49FF D04F4ABE A7F91E27 CA5C658A 90F51C97 F5C9411C 
+  802E9524 303A9D33 98278EA9 E92C0E03 6AA46DC9 29083B5A 1A7841D1 4EEAFF6A 
+  E1523199 F78B912B 5F63103E 7A13E375 4511977D 0A2224A2 9895192E C09DDC0B 
+  74F4187A 146AC42F 57879DD0 1B6AF3B2 B7B1AC55 492082A3 240C5194 2086F8EA 
+  8DC55221 0BF8AC7D 2BAB2E0E F3B8DD34 18F9CF17 C472CDF6 111DD2CE 6559E282 
+  1513DFFD 772839CF AADCBB8F F70C6C83 6C3CB03A 26001A0C AF23DE28 7F268D6B 
+  40EBB464 1F685B5F 7425E62D A60FFAB6 477BA652 EB6245EE FA432CAF A4090203 
+  010001A3 63306130 0F060355 1D130101 FF040530 030101FF 300E0603 551D0F01 
+  01FF0404 03020186 301F0603 551D2304 18301680 14ED4370 F9D87D01 43309A30 
+  39FA90A9 847C560E 21301D06 03551D0E 04160414 ED4370F9 D87D0143 309A3039 
+  FA90A984 7C560E21 300D0609 2A864886 F70D0101 04050003 82010100 299E2B09 
+  1A1CBE86 CEE25FB5 34330973 93E091CD 18B2578C A77AE09F 4B7578B5 A68A0511 
+  C01B0886 BCD71095 D049B571 4C46C582 39447886 3D9A8FC8 915954B7 2381A6E7 
+  73C9474D 87A4197A C7505C25 0BF2342E D8461BB3 81BC9193 75A01EA5 F4957DB8 
+  A61ADFE6 9579E569 83A4E222 0EED4DDF 959D7BB1 73BBDB51 D3956E85 F008DF4B 
+  E732D89F 4B8E5EAE 1E4F94BB 8895239F F7FC90ED 8761F046 66FFFBB1 A422A320 
+  82355F16 62F7DDF8 668F71CA 1AB10637 893139C2 45F378A8 53701C2B ED2AE575 
+  9E5912FB 13E2685B 67CF7CFE 0818941F 6C16ECEF 542F279A 6FB163B7 727DE203 
+  4890C901 B693FCFA BF934C24 A243C3BC 8B5FB59D 82CC90EC 2C3997E4
+        quit
+!
+redundancy
+!
+!
+!
+track 25 ip sla 25 reachability
+ delay down 5 up 5
+!
+track 26 ip sla 26 reachability
+ delay down 5 up 5
+! 
+!
+crypto ikev2 proposal PROMSK 
+ encryption aes-cbc-128
+ integrity md5
+ group 2
+!         
+crypto ikev2 policy IKEV2 
+ proposal PROMSK
+!
+!
+crypto ikev2 profile PROFILE1
+ match address local interface Loopback0
+ match address local interface Loopback30
+ match identity remote address 0.0.0.0 
+ authentication remote rsa-sig
+ authentication local rsa-sig
+ pki trustpoint VPN
+!
+!
+!
+crypto ipsec transform-set IPSEC_TS esp-aes esp-md5-hmac 
+ mode tunnel
+crypto ipsec transform-set DMVPN esp-aes esp-md5-hmac 
+ mode transport
+!
+crypto ipsec profile DMVPN_PROF
+ set transform-set DMVPN 
+ set ikev2-profile PROFILE1
+!         
+crypto ipsec profile IPSEC_PROF
+ set transform-set IPSEC_TS 
+ set ikev2-profile PROFILE1
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description == FOR MGMT == 
+ ip address 10.30.0.1 255.255.255.255
+ ip nat inside
+ ip virtual-reassembly in
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:CCCC:1::1/128
+ ipv6 enable
+!
+interface Loopback30
+ ip address 10.30.30.30 255.255.255.255
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Tunnel1030
+ ip address 192.168.30.30 255.255.255.0
+ no ip redirects
+ ip mtu 1400
+ ip nhrp map multicast 10.10.10.100
+ ip nhrp map 192.168.30.1 10.10.10.100
+ ip nhrp network-id 100
+ ip nhrp holdtime 300
+ ip nhrp nhs 192.168.30.1
+ ip nhrp registration no-unique
+ ip nhrp shortcut
+ ip tcp adjust-mss 1360
+ tunnel source Loopback30
+ tunnel mode gre multipoint
+ tunnel protection ipsec profile DMVPN_PROF
+!
+interface Ethernet0/0
+ description == link to R26 == 
+ ip address 100.100.30.1 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+ ipv6 address FE80::CD1 link-local
+ ipv6 address 2001:CCCC:1:CCD1::1/64
+ ipv6 enable
+!
+interface Ethernet0/1
+ description == link to R25 == 
+ ip address 100.100.31.1 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+ ipv6 address FE80::CD2 link-local
+ ipv6 address 2001:CCCC:1:CCD2::1/64
+ ipv6 enable
+!
+interface Ethernet0/2
+ description == link to SW29 ==
+ ip address 10.30.0.100 255.255.255.254
+ ip nat inside
+ ip virtual-reassembly in
+ ipv6 address FE80::64 link-local
+ ipv6 address 2001:CCCC:1::64/127
+ ipv6 enable
+!
+interface Ethernet0/3
+ no ip address
+ shutdown
+!
+interface Ethernet1/0
+ no ip address
+ shutdown
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+!
+router eigrp LAN
+ !
+ address-family ipv4 unicast autonomous-system 10
+  !       
+  af-interface default
+   bfd
+   hello-interval 1
+   hold-time 3
+   passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/2
+   summary-address 0.0.0.0 0.0.0.0
+   no passive-interface
+  exit-af-interface
+  !
+  af-interface Tunnel1030
+   no passive-interface
+  exit-af-interface
+  !
+  topology base
+   summary-metric 0.0.0.0/0 distance 254
+  exit-af-topology
+  network 10.30.0.0 0.0.255.255
+  network 100.100.30.0 0.0.0.3
+  network 100.100.31.0 0.0.0.3
+  network 192.168.30.0
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+ip http server
+no ip http secure-server
+ip nat inside source list 30 interface Loopback30 overload
+ip nat inside source list 31 interface Loopback30 overload
+ip route 0.0.0.0 0.0.0.0 100.100.31.2 250 name "track defaulte to R25" track 25
+ip route 0.0.0.0 0.0.0.0 100.100.30.2 250 name "track defaulte to R26" track 26
+ip route 172.10.10.0 255.255.255.0 192.168.30.1
+ip route 172.10.70.0 255.255.255.0 192.168.30.1
+!
+!
+ip prefix-list 30 seq 5 permit 172.10.30.0/24
+!
+ip prefix-list 31 seq 5 permit 172.10.31.0/24
+!
+ip prefix-list NET30 seq 5 permit 172.10.30.0/24
+!
+ip prefix-list NET31 seq 5 permit 172.10.31.0/24
+ip sla auto discovery
+ip sla 25
+ icmp-echo 100.100.31.2 source-interface Ethernet0/1
+ timeout 15000
+ frequency 15
+ip sla schedule 25 life forever start-time now
+ip sla 26
+ icmp-echo 100.100.30.2 source-interface Ethernet0/0
+ timeout 15000
+ frequency 15
+ip sla schedule 26 life forever start-time now
+access-list 30 permit 172.10.30.0 0.0.0.255
+access-list 31 permit 172.10.31.0 0.0.0.255
+ipv6 route ::/0 2001:CCCC:1:CCD1::2 254 name "default ipv6 to R26"
+ipv6 route ::/0 2001:CCCC:1:CCD2::2 254 name "default ipv6 to R25"
+!
+!
+ipv6 prefix-list NET30v6 seq 5 permit 2001:CCCC:1::30:0/112
+!
+ipv6 prefix-list NET31v6 seq 5 permit 2001:CCCC:1::31:0/112
+route-map BALANCE permit 10
+ match ip address prefix-list 30
+ set ip next-hop 100.100.30.2
+!         
+route-map BALANCE permit 20
+ match ip address prefix-list 31
+ set ip next-hop 100.100.31.2
+!
+route-map BALANCE deny 30
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+banner motd ^CThis is a secure system. Authorized Access Only!^C
+!
+line con 0
+ exec-timeout 0 0
+ password 7 02050D480809
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 030752180500
+ logging synchronous
+ login
+ transport input all
+!
+!
+end

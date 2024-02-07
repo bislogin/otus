@@ -1,0 +1,239 @@
+Building configuration...
+
+Current configuration : 6229 bytes
+!
+! Last configuration change at 19:55:58 MSK Tue Feb 6 2024
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R27
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$tfrS$1aF3lZm4Du8uGFtqw1Ua..
+!
+no aaa new-model
+clock timezone MSK 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!         
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip domain name Labitnagi.ru
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!         
+crypto pki trustpoint VPN
+ enrollment url http://192.168.30.1:80
+ revocation-check none
+!
+!
+crypto pki certificate chain VPN
+ certificate 07
+  30820230 30820118 A0030201 02020107 300D0609 2A864886 F70D0101 05050030 
+  0D310B30 09060355 04031302 4341301E 170D3234 30323036 31363336 35375A17 
+  0D323530 32303531 36333635 375A3021 311F301D 06092A86 4886F70D 01090216 
+  10523237 2E4C6162 69746E61 67692E72 75305C30 0D06092A 864886F7 0D010101 
+  0500034B 00304802 4100C817 590F7702 343F69E6 9A8DF20F 095FF8AC B16C3A18 
+  4AC42504 A1B32C1F C6C5A10C 100DA70A 518D06BD C3B99E25 01E167E5 1A1CAA12 
+  563B23E3 926A3556 04D30203 010001A3 4F304D30 0B060355 1D0F0404 030205A0 
+  301F0603 551D2304 18301680 14ED4370 F9D87D01 43309A30 39FA90A9 847C560E 
+  21301D06 03551D0E 04160414 FA0B4C87 396F5ABD 1D6659BC AD7163A2 9DFA8DBC 
+  300D0609 2A864886 F70D0101 05050003 82010100 2E02679E 830F6D2D DE8CA762 
+  30CE0DE0 3AD1470C 3180EAB4 BDACCC5D ED305786 56DF6A39 652F33A2 69A96EF2 
+  22785C5D 889B2F8F 2AF34872 DC40E236 2E5D401F BC1A0638 2B1D2DF3 9B4E6A2D 
+  A5F34E1F 56414B5C E4F4EB28 37A07E57 690251BE E87E8A84 525BE48D B575A6A4 
+  21367E29 95AE2D55 7CA1FCBC FCE7F238 534AAD02 12A6FFEE C3228F32 EDD5FE4C 
+  76A68284 E84D2C0E 90EDC6CC F7595C5E 12F9C9FE FC30F57A 54CA7C3C 1B304635 
+  5558C297 3B29E3D0 379D25AD 76FC6D89 D8516E2A A6320BD8 C9863CBA F92273C1 
+  BFAB88D7 0BEA4E94 EEA97C7A 795B99EE 150E841F 3EEDAA9C 63E276E7 01950ACD 
+  DEF9B2A9 A8645BAA A9530290 7BD9A795 F57B258D
+        quit
+ certificate ca 01
+  308202F8 308201E0 A0030201 02020101 300D0609 2A864886 F70D0101 04050030 
+  0D310B30 09060355 04031302 4341301E 170D3234 30323036 31343134 34365A17 
+  0D323730 32303531 34313434 365A300D 310B3009 06035504 03130243 41308201 
+  22300D06 092A8648 86F70D01 01010500 0382010F 00308201 0A028201 0100C4CE 
+  FCC34D65 C994A9C6 328895EA 9FE5D7E1 1BFC6AD3 51889CBF EAE197C6 6293A962 
+  AC1113F4 2292657A DD4F49FF D04F4ABE A7F91E27 CA5C658A 90F51C97 F5C9411C 
+  802E9524 303A9D33 98278EA9 E92C0E03 6AA46DC9 29083B5A 1A7841D1 4EEAFF6A 
+  E1523199 F78B912B 5F63103E 7A13E375 4511977D 0A2224A2 9895192E C09DDC0B 
+  74F4187A 146AC42F 57879DD0 1B6AF3B2 B7B1AC55 492082A3 240C5194 2086F8EA 
+  8DC55221 0BF8AC7D 2BAB2E0E F3B8DD34 18F9CF17 C472CDF6 111DD2CE 6559E282 
+  1513DFFD 772839CF AADCBB8F F70C6C83 6C3CB03A 26001A0C AF23DE28 7F268D6B 
+  40EBB464 1F685B5F 7425E62D A60FFAB6 477BA652 EB6245EE FA432CAF A4090203 
+  010001A3 63306130 0F060355 1D130101 FF040530 030101FF 300E0603 551D0F01 
+  01FF0404 03020186 301F0603 551D2304 18301680 14ED4370 F9D87D01 43309A30 
+  39FA90A9 847C560E 21301D06 03551D0E 04160414 ED4370F9 D87D0143 309A3039 
+  FA90A984 7C560E21 300D0609 2A864886 F70D0101 04050003 82010100 299E2B09 
+  1A1CBE86 CEE25FB5 34330973 93E091CD 18B2578C A77AE09F 4B7578B5 A68A0511 
+  C01B0886 BCD71095 D049B571 4C46C582 39447886 3D9A8FC8 915954B7 2381A6E7 
+  73C9474D 87A4197A C7505C25 0BF2342E D8461BB3 81BC9193 75A01EA5 F4957DB8 
+  A61ADFE6 9579E569 83A4E222 0EED4DDF 959D7BB1 73BBDB51 D3956E85 F008DF4B 
+  E732D89F 4B8E5EAE 1E4F94BB 8895239F F7FC90ED 8761F046 66FFFBB1 A422A320 
+  82355F16 62F7DDF8 668F71CA 1AB10637 893139C2 45F378A8 53701C2B ED2AE575 
+  9E5912FB 13E2685B 67CF7CFE 0818941F 6C16ECEF 542F279A 6FB163B7 727DE203 
+  4890C901 B693FCFA BF934C24 A243C3BC 8B5FB59D 82CC90EC 2C3997E4
+        quit
+!
+redundancy
+!
+!
+! 
+!
+crypto ikev2 proposal PROMSK 
+ encryption aes-cbc-128
+ integrity md5
+ group 2
+!
+crypto ikev2 policy IKEV2 
+ proposal PROMSK
+!
+!
+crypto ikev2 profile PROFILE1
+ match address local interface Loopback0
+ match identity remote address 0.0.0.0 
+ authentication remote rsa-sig
+ authentication local rsa-sig
+ pki trustpoint VPN
+!
+!
+!
+crypto ipsec transform-set IPSEC_TS esp-aes esp-md5-hmac 
+ mode tunnel
+crypto ipsec transform-set DMVPN esp-aes esp-md5-hmac 
+ mode transport
+!
+crypto ipsec profile DMVPN_PROF
+ set transform-set DMVPN 
+ set ikev2-profile PROFILE1
+!
+crypto ipsec profile IPSEC_PROF
+ set transform-set IPSEC_TS 
+ set ikev2-profile PROFILE1
+!
+!
+!
+!         
+!
+!
+!
+interface Loopback0
+ description == FOR MGMT == 
+ ip address 10.35.0.1 255.255.255.255
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:CCCC:2::1/128
+ ipv6 enable
+!
+interface Loopback235
+ ip address 172.10.35.1 255.255.255.0
+!
+interface Tunnel1030
+ ip address 192.168.30.35 255.255.255.0
+ no ip redirects
+ ip mtu 1400
+ ip nhrp map multicast 10.10.10.100
+ ip nhrp map 192.168.30.1 10.10.10.100
+ ip nhrp network-id 100
+ ip nhrp holdtime 300
+ ip nhrp nhs 192.168.30.1
+ ip nhrp shortcut
+ ip tcp adjust-mss 1360
+ tunnel source Loopback0
+ tunnel mode gre multipoint
+ tunnel protection ipsec profile DMVPN_PROF
+!
+interface Ethernet0/0
+ description == link to R25 == 
+ ip address 100.100.35.1 255.255.255.252
+ ipv6 address FE80::CD1 link-local
+ ipv6 address 2001:CCCC:2:CCDD::1/64
+ ipv6 enable
+!
+interface Ethernet0/1
+ no ip address
+ shutdown
+!
+interface Ethernet0/2
+ no ip address
+ shutdown
+!
+interface Ethernet0/3
+ no ip address
+ shutdown 
+!
+interface Ethernet1/0
+ no ip address
+ shutdown
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+ip forward-protocol nd
+!
+!
+ip http server
+no ip http secure-server
+ip route 0.0.0.0 0.0.0.0 100.100.35.2 name "def v4 to Triada"
+ip route 172.10.10.0 255.255.255.0 Tunnel1030
+ip route 172.10.70.0 255.255.255.0 Tunnel1030
+!
+ipv6 route ::/0 2001:CCCC:2:CCDD::2 name "def v6 to Triada"
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+banner motd ^CThis is a secure system. Authorized Access Only!^C
+!
+line con 0
+ exec-timeout 0 0
+ password 7 01100F175804
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 121A0C041104
+ logging synchronous
+ login
+ transport input all
+!
+!
+end

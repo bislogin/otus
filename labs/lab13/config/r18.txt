@@ -1,0 +1,355 @@
+Building configuration...
+
+Current configuration : 9668 bytes
+!
+! Last configuration change at 17:32:23 MSK Tue Feb 6 2024
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R18
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$42tN$e/cV6nMzNv0hPXDqUI6tB.
+!
+aaa new-model
+!
+!
+!
+!
+!
+!         
+!
+aaa session-id common
+clock timezone MSK 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip domain name SPB.ru
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!         
+multilink bundle-name authenticated
+!
+!
+key chain EIGRP-KEY
+ key 1
+  key-string 7 11021C1C121B0C1E14
+!
+!
+!
+!
+!
+!
+crypto pki trustpoint VPN
+ enrollment url http://192.168.10.1:80
+ revocation-check none
+!
+!
+crypto pki certificate chain VPN
+ certificate 04
+  3082022A 30820112 A0030201 02020104 300D0609 2A864886 F70D0101 05050030 
+  0D310B30 09060355 04031302 4341301E 170D3234 30323036 31343331 30315A17 
+  0D323530 32303531 34333130 315A301B 31193017 06092A86 4886F70D 01090216 
+  0A523138 2E535042 2E727530 5C300D06 092A8648 86F70D01 01010500 034B0030 
+  48024100 9C4B0C1B 7E7D219C DECFF02F F6A31655 C990BEF6 46CF747D 02A149D4 
+  6B957FE6 293645E4 01847710 71346706 658259D6 551DFE6F 58269D5A 0CFE3B1D 
+  049BD1D1 02030100 01A34F30 4D300B06 03551D0F 04040302 05A0301F 0603551D 
+  23041830 168014ED 4370F9D8 7D014330 9A3039FA 90A9847C 560E2130 1D060355 
+  1D0E0416 0414015B 33CF8BA6 CA86F80A 66BE6315 61E83320 CE31300D 06092A86 
+  4886F70D 01010505 00038201 01005603 FDA6C171 26B27016 C1997CE4 990F1C8B 
+  2B7F4C56 1F3FB6A8 A624AE78 56666553 F374AAB2 9D7B9AB3 BD93CA2C ECA29409 
+  11ABD386 2F6FF0CF 9F383051 892EA8E0 86229D2E 2F7F0ADE 124F1E95 9C830EBD 
+  C11F11BE 67A11954 DD7C3260 D7529D7D ACDCD3A1 CBA5CA8C 3BB0B08E 4CD18438 
+  3DE13CB5 6BBF1F91 584941AF 31BA9802 1332D5D4 7901C622 35F0A89D 67D74543 
+  8CE378DA C8527491 FB91C152 1A8A9A79 A4B2C544 DE0FCBED 497DFD35 F4C332C3 
+  94F5AE5F 3ADC71E5 DC9F7110 0672EBAC 17F51CF5 FBEE4B42 E481A89A E4C79E8C 
+  68A50773 F0201AF7 2FE30921 EBAB92CA 3D7E78D8 E79A9723 B984E7DA 8CCE19BB 
+  FD8A358A 88A6505B 1B530CD8 C0BA
+        quit
+ certificate ca 01
+  308202F8 308201E0 A0030201 02020101 300D0609 2A864886 F70D0101 04050030 
+  0D310B30 09060355 04031302 4341301E 170D3234 30323036 31343134 34365A17 
+  0D323730 32303531 34313434 365A300D 310B3009 06035504 03130243 41308201 
+  22300D06 092A8648 86F70D01 01010500 0382010F 00308201 0A028201 0100C4CE 
+  FCC34D65 C994A9C6 328895EA 9FE5D7E1 1BFC6AD3 51889CBF EAE197C6 6293A962 
+  AC1113F4 2292657A DD4F49FF D04F4ABE A7F91E27 CA5C658A 90F51C97 F5C9411C 
+  802E9524 303A9D33 98278EA9 E92C0E03 6AA46DC9 29083B5A 1A7841D1 4EEAFF6A 
+  E1523199 F78B912B 5F63103E 7A13E375 4511977D 0A2224A2 9895192E C09DDC0B 
+  74F4187A 146AC42F 57879DD0 1B6AF3B2 B7B1AC55 492082A3 240C5194 2086F8EA 
+  8DC55221 0BF8AC7D 2BAB2E0E F3B8DD34 18F9CF17 C472CDF6 111DD2CE 6559E282 
+  1513DFFD 772839CF AADCBB8F F70C6C83 6C3CB03A 26001A0C AF23DE28 7F268D6B 
+  40EBB464 1F685B5F 7425E62D A60FFAB6 477BA652 EB6245EE FA432CAF A4090203 
+  010001A3 63306130 0F060355 1D130101 FF040530 030101FF 300E0603 551D0F01 
+  01FF0404 03020186 301F0603 551D2304 18301680 14ED4370 F9D87D01 43309A30 
+  39FA90A9 847C560E 21301D06 03551D0E 04160414 ED4370F9 D87D0143 309A3039 
+  FA90A984 7C560E21 300D0609 2A864886 F70D0101 04050003 82010100 299E2B09 
+  1A1CBE86 CEE25FB5 34330973 93E091CD 18B2578C A77AE09F 4B7578B5 A68A0511 
+  C01B0886 BCD71095 D049B571 4C46C582 39447886 3D9A8FC8 915954B7 2381A6E7 
+  73C9474D 87A4197A C7505C25 0BF2342E D8461BB3 81BC9193 75A01EA5 F4957DB8 
+  A61ADFE6 9579E569 83A4E222 0EED4DDF 959D7BB1 73BBDB51 D3956E85 F008DF4B 
+  E732D89F 4B8E5EAE 1E4F94BB 8895239F F7FC90ED 8761F046 66FFFBB1 A422A320 
+  82355F16 62F7DDF8 668F71CA 1AB10637 893139C2 45F378A8 53701C2B ED2AE575 
+  9E5912FB 13E2685B 67CF7CFE 0818941F 6C16ECEF 542F279A 6FB163B7 727DE203 
+  4890C901 B693FCFA BF934C24 A243C3BC 8B5FB59D 82CC90EC 2C3997E4
+        quit
+!
+redundancy
+!
+!
+!         
+!
+crypto ikev2 proposal PROMSK 
+ encryption aes-cbc-128
+ integrity md5
+ group 2
+!
+crypto ikev2 policy IKEV2 
+ proposal PROMSK
+!
+!
+crypto ikev2 profile PROFILE1
+ match address local interface Loopback18
+ match identity remote address 0.0.0.0 
+ authentication remote rsa-sig
+ authentication local rsa-sig
+ pki trustpoint VPN
+!
+!
+!
+crypto ipsec transform-set IPSEC_TS esp-aes esp-md5-hmac 
+ mode tunnel
+!
+crypto ipsec profile IPSEC_PROF
+ set transform-set IPSEC_TS 
+ set ikev2-profile PROFILE1
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description == FOR MGMT ==
+ ip address 10.20.0.3 255.255.255.255
+ ipv6 address FE80::3 link-local
+ ipv6 address 2001:BBBB::3/128
+ ipv6 enable
+!
+interface Loopback18
+ ip address 10.20.20.6 255.255.255.255
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Tunnel1020
+ ip address 192.168.10.2 255.255.255.0
+ ip mtu 1400
+ ip tcp adjust-mss 1360
+ tunnel source Loopback18
+ tunnel destination 10.10.10.100
+ tunnel protection ipsec profile IPSEC_PROF
+!
+interface Ethernet0/0
+ description == link to R16 == 
+ ip address 10.20.0.103 255.255.255.254
+ ip nat inside
+ ip virtual-reassembly in
+ ipv6 address FE80::67 link-local
+ ipv6 address 2001:BBBB::67/127
+ ipv6 enable
+ bfd interval 50 min_rx 50 multiplier 3
+!
+interface Ethernet0/1
+ description == link to R17 == 
+ ip address 10.20.0.111 255.255.255.254
+ ip nat inside
+ ip virtual-reassembly in
+ ipv6 address FE80::6F link-local
+ ipv6 address 2001:BBBB::6F/127
+ ipv6 enable
+ bfd interval 50 min_rx 50 multiplier 3
+!
+interface Ethernet0/2
+ description == link to R24 == 
+ ip address 100.100.21.1 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+ ipv6 address FE80::BD1 link-local
+ ipv6 address 2001:BBBB:BBD1::1/64
+ ipv6 enable
+!
+interface Ethernet0/3
+ description == link to R26 == 
+ ip address 100.100.22.1 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+ ipv6 address FE80::BD2 link-local
+ ipv6 address 2001:BBBB:BBD2::1/64
+ ipv6 enable
+!
+!
+router eigrp SPB
+ !
+ address-family ipv4 unicast autonomous-system 20
+  !
+  af-interface default
+   authentication mode md5
+   authentication key-chain EIGRP-KEY
+   bfd
+   hello-interval 1
+   hold-time 3
+   passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/0
+   summary-address 0.0.0.0 0.0.0.0
+   no passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/1
+   summary-address 0.0.0.0 0.0.0.0
+   no passive-interface
+  exit-af-interface
+  !
+  topology base
+   distribute-list prefix DENY_DEF in Ethernet0/0
+   distribute-list prefix DENY_DEF in Ethernet0/1
+   summary-metric 0.0.0.0/0 distance 254
+  exit-af-topology
+  network 10.20.0.0 0.0.255.255
+  network 10.20.0.3 0.0.0.0
+  eigrp router-id 10.20.0.3
+ exit-address-family
+ !
+ address-family ipv6 unicast autonomous-system 20
+  !
+  af-interface default
+   authentication mode md5
+   authentication key-chain EIGRP-KEY
+   bfd
+   hello-interval 1
+   hold-time 3
+   passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/0
+   no passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/1
+   no passive-interface
+  exit-af-interface
+  !
+  topology base
+  exit-af-topology
+ exit-address-family
+!
+router bgp 2042
+ bgp router-id 10.20.0.3
+ bgp log-neighbor-changes
+ neighbor 2001:BBBB:BBD1::2 remote-as 520
+ neighbor 2001:BBBB:BBD1::2 description == IPV6 BGP to ISP Triada
+ neighbor 2001:BBBB:BBD2::2 remote-as 520
+ neighbor 2001:BBBB:BBD2::2 description == IPV6 BGP to ISP Triada
+ neighbor 100.100.21.2 remote-as 520
+ neighbor 100.100.21.2 description == BGP ro ISP Triada
+ neighbor 100.100.22.2 remote-as 520
+ neighbor 100.100.22.2 description == BGP ro ISP Triada
+ !
+ address-family ipv4
+  network 10.20.20.0 mask 255.255.255.248
+  no neighbor 2001:BBBB:BBD1::2 activate
+  no neighbor 2001:BBBB:BBD2::2 activate
+  neighbor 100.100.21.2 activate
+  neighbor 100.100.21.2 next-hop-self
+  neighbor 100.100.21.2 prefix-list Triada-out out
+  neighbor 100.100.22.2 activate
+  neighbor 100.100.22.2 next-hop-self
+  neighbor 100.100.22.2 prefix-list Triada-out out
+  maximum-paths 2
+ exit-address-family
+ !
+ address-family ipv6
+  maximum-paths 2
+  network 2001:BBBB::/64
+  neighbor 2001:BBBB:BBD1::2 activate
+  neighbor 2001:BBBB:BBD1::2 next-hop-self
+  neighbor 2001:BBBB:BBD1::2 prefix-list IPV6-Triada-out out
+  neighbor 2001:BBBB:BBD2::2 activate
+  neighbor 2001:BBBB:BBD2::2 next-hop-self
+  neighbor 2001:BBBB:BBD2::2 prefix-list IPV6-Triada-out out
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+ip http server
+no ip http secure-server
+ip nat pool NAT-SPB 10.20.20.1 10.20.20.5 netmask 255.255.255.248
+ip nat inside source list 1 pool NAT-SPB overload
+ip route 10.20.20.0 255.255.255.248 Null0
+ip route 172.10.10.0 255.255.255.0 Tunnel1020
+ip route 172.10.70.0 255.255.255.0 Tunnel1020
+!
+ip access-list extended SPB_to_MSK
+ permit ip 172.10.80.0 0.0.0.255 172.10.10.0 0.0.0.255
+ permit ip 172.10.80.0 0.0.0.255 172.10.70.0 0.0.0.255
+ permit ip 172.10.100.0 0.0.0.255 172.10.10.0 0.0.0.255
+ permit ip 172.10.100.0 0.0.0.255 172.10.70.0 0.0.0.255
+!
+!
+ip prefix-list DENY_DEF seq 5 deny 0.0.0.0/0
+ip prefix-list DENY_DEF seq 10 permit 0.0.0.0/0 le 32
+!
+ip prefix-list Triada-out seq 5 permit 10.20.20.0/29
+ip prefix-list Triada-out seq 10 permit 10.20.0.0/16
+ip prefix-list Triada-out seq 100 deny 0.0.0.0/0 le 32
+access-list 1 permit 172.10.80.0 0.0.0.255
+access-list 1 permit 172.10.100.0 0.0.0.255
+!
+!
+ipv6 prefix-list IPV6-Triada-out seq 10 permit 2001:BBBB::/64
+ipv6 prefix-list IPV6-Triada-out seq 100 deny ::/0 le 128
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+banner motd ^CThis is a secure system. Authorized Access Only!^C
+!
+line con 0
+ exec-timeout 0 0
+ password 7 094F471A1A0A
+ logging synchronous
+line aux 0
+line vty 0 4
+ password 7 030752180500
+ logging synchronous
+ transport input all
+!
+!
+end
