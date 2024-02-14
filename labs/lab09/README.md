@@ -17,6 +17,8 @@
 
 #### 1. Настроите iBGP в офисе Москва между маршрутизаторами R14 и R15.
 
+![Alt text](https://github.com/bislogin/otus/blob/main/labs/lab09/msk.png)
+
 Настроим соседство между R14 и R15   
 Привет на R14:
 ```
@@ -73,6 +75,9 @@ Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State
 ```
 
 #### 2. Настроите iBGP в провайдере Триада, с использованием RR.
+
+![Alt text](https://github.com/bislogin/otus/blob/main/labs/lab09/triada.png)
+
 Назначим в качестве RR роутер R24   
 Добавим iBGP соседство между R24 и R25 через интерфейсы lo0
 ```
