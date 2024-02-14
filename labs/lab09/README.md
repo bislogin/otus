@@ -81,7 +81,7 @@ Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State
 ![Alt text](https://github.com/bislogin/otus/blob/main/labs/lab09/triada.png)
 
 Назначим в качестве RR роутер R24   
-Добавим iBGP соседство между R24 и R25 через интерфейсы lo0
+Добавим iBGP соседство через интерфейсы lo0
 ```
 router bgp 520
  neighbor TRIADA-PEER peer-group
@@ -102,10 +102,6 @@ router bgp 520
  neighbor 2001:DDDD::3 description == IPV6 BGP to R25
  neighbor 2001:DDDD::4 peer-group TRIADA-PEER-IPV6
  neighbor 2001:DDDD::4 description == IPV6 BGP to R26
-```
-Обозначим на R24 соседей, которые будут route-reflector-client
-```
-router bgp 520
  address-family ipv4
   neighbor TRIADA-PEER next-hop-self
   neighbor 10.40.0.1 activate
@@ -120,27 +116,7 @@ router bgp 520
   neighbor 2001:DDDD::3 activate
   neighbor 2001:DDDD::4 activate
 ```
-Погасим все iBGP соседства на R25 кроме RR
-```
-R25#sh ip bgp summary
-BGP router identifier 10.40.0.3, local AS number 520
-BGP table version is 40, main routing table version 40
-15 network entries using 2160 bytes of memory
-16 path entries using 1344 bytes of memory
-6/6 BGP path/bestpath attribute entries using 960 bytes of memory
-2 BGP rrinfo entries using 48 bytes of memory
-5 BGP AS-PATH entries using 120 bytes of memory
-0 BGP route-map cache entries using 0 bytes of memory
-0 BGP filter-list cache entries using 0 bytes of memory
-BGP using 4632 total bytes of memory
-BGP activity 33/3 prefixes, 71/29 paths, scan interval 60 secs
-
-Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
-10.40.0.2       4          520      36      28       40    0    0 00:20:37       13
-10.40.0.100     4          520       0       0        1    0    0 never    Idle (Admin)
-10.40.0.107     4          520       0       0        1    0    0 never    Idle (Admin)
-```
-Посмотрим таблицу BGP
+Посмотрим таблицу BGP на R25
 ```
 R25#show ip bgp 
 BGP table version is 40, local router ID is 10.40.0.3
