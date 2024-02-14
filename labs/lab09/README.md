@@ -30,11 +30,13 @@ router bgp 1001
  !
  address-family ipv4
   neighbor 10.10.0.125 activate
+  neighbor 10.10.0.125 next-hop-self
   no neighbor 2001:AAAA::7D activate
  exit-address-family
  !
  address-family ipv6
   neighbor 2001:AAAA::7D activate
+  neighbor 2001:AAAA::7D next-hop-self
  exit-address-family
 ```
 Проверим соседа:
@@ -82,30 +84,41 @@ Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State
 Добавим iBGP соседство между R24 и R25 через интерфейсы lo0
 ```
 router bgp 520
- neighbor 10.40.0.3 remote-as 520
+ neighbor TRIADA-PEER peer-group
+ neighbor TRIADA-PEER remote-as 520
+ neighbor TRIADA-PEER update-source Loopback0
+ neighbor TRIADA-PEER-IPV6 peer-group
+ neighbor TRIADA-PEER-IPV6 remote-as 520
+ neighbor TRIADA-PEER-IPV6 update-source Loopback0
+ neighbor 10.40.0.1 peer-group TRIADA-PEER
+ neighbor 10.40.0.1 description == BGP to R23
+ neighbor 10.40.0.3 peer-group TRIADA-PEER
  neighbor 10.40.0.3 description == BGP to R25
- neighbor 10.40.0.3 update-source Loopback0
- neighbor 2001:DDDD::3 remote-as 520
+ neighbor 10.40.0.4 peer-group TRIADA-PEER
+ neighbor 10.40.0.4 description == BGP to R26
+ neighbor 2001:DDDD::1 peer-group TRIADA-PEER-IPV6
+ neighbor 2001:DDDD::1 description == IPV6 BGP to R23
+ neighbor 2001:DDDD::3 peer-group TRIADA-PEER-IPV6
  neighbor 2001:DDDD::3 description == IPV6 BGP to R25
- neighbor 2001:DDDD::3 update-source Loopback0
+ neighbor 2001:DDDD::4 peer-group TRIADA-PEER-IPV6
+ neighbor 2001:DDDD::4 description == IPV6 BGP to R26
 ```
 Обозначим на R24 соседей, которые будут route-reflector-client
 ```
 router bgp 520
  address-family ipv4
+  neighbor TRIADA-PEER next-hop-self
+  neighbor 10.40.0.1 activate
   neighbor 10.40.0.3 activate
-  neighbor 10.40.0.3 route-reflector-client
-  neighbor 10.40.0.102 activate
-  neighbor 10.40.0.102 route-reflector-client
-  neighbor 10.40.0.105 activate
-  neighbor 10.40.0.105 route-reflector-client
+  neighbor 10.40.0.4 activate
+  no neighbor 2001:DDDD::1 activate
+  no neighbor 2001:DDDD::3 activate
+  no neighbor 2001:DDDD::4 activate
  address-family ipv6
+  neighbor TRIADA-PEER-IPV6 next-hop-self
+  neighbor 2001:DDDD::1 activate
   neighbor 2001:DDDD::3 activate
-  neighbor 2001:DDDD::3 route-reflector-client
-  neighbor 2001:DDDD::66 activate
-  neighbor 2001:DDDD::66 route-reflector-client
-  neighbor 2001:DDDD::69 activate
-  neighbor 2001:DDDD::69 route-reflector-client
+  neighbor 2001:DDDD::4 activate
 ```
 Погасим все iBGP соседства на R25 кроме RR
 ```
