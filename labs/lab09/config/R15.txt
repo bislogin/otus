@@ -1,8 +1,8 @@
 Building configuration...
 
-Current configuration : 4689 bytes
+Current configuration : 13648 bytes
 !
-! Last configuration change at 13:13:31 MSK Tue Dec 12 2023
+! No configuration change since last restart
 version 15.2
 service timestamps debug datetime msec
 service timestamps log datetime msec
@@ -33,6 +33,7 @@ mmi snmp-timeout 180
 !
 !
 no ip domain lookup
+ip domain name MSK.ru
 ip cef
 ipv6 unicast-routing
 ipv6 cef
@@ -44,17 +45,130 @@ multilink bundle-name authenticated
 !
 !
 !
-!
 !         
+crypto pki server CA
+ database level complete
+!
+crypto pki trustpoint CA
+ revocation-check crl
+ rsakeypair CA
+!
+crypto pki trustpoint VPN
+ enrollment url http://192.168.10.1:80
+ revocation-check none
+!
+!
+crypto pki certificate chain CA
+ certificate ca 01
+  308202F8 308201E0 A0030201 02020101 300D0609 2A864886 F70D0101 04050030 
+  0D310B30 09060355 04031302 4341301E 170D3234 30323036 31343134 34365A17 
+  0D323730 32303531 34313434 365A300D 310B3009 06035504 03130243 41308201 
+  22300D06 092A8648 86F70D01 01010500 0382010F 00308201 0A028201 0100C4CE 
+  FCC34D65 C994A9C6 328895EA 9FE5D7E1 1BFC6AD3 51889CBF EAE197C6 6293A962 
+  AC1113F4 2292657A DD4F49FF D04F4ABE A7F91E27 CA5C658A 90F51C97 F5C9411C 
+  802E9524 303A9D33 98278EA9 E92C0E03 6AA46DC9 29083B5A 1A7841D1 4EEAFF6A 
+  E1523199 F78B912B 5F63103E 7A13E375 4511977D 0A2224A2 9895192E C09DDC0B 
+  74F4187A 146AC42F 57879DD0 1B6AF3B2 B7B1AC55 492082A3 240C5194 2086F8EA 
+  8DC55221 0BF8AC7D 2BAB2E0E F3B8DD34 18F9CF17 C472CDF6 111DD2CE 6559E282 
+  1513DFFD 772839CF AADCBB8F F70C6C83 6C3CB03A 26001A0C AF23DE28 7F268D6B 
+  40EBB464 1F685B5F 7425E62D A60FFAB6 477BA652 EB6245EE FA432CAF A4090203 
+  010001A3 63306130 0F060355 1D130101 FF040530 030101FF 300E0603 551D0F01 
+  01FF0404 03020186 301F0603 551D2304 18301680 14ED4370 F9D87D01 43309A30 
+  39FA90A9 847C560E 21301D06 03551D0E 04160414 ED4370F9 D87D0143 309A3039 
+  FA90A984 7C560E21 300D0609 2A864886 F70D0101 04050003 82010100 299E2B09 
+  1A1CBE86 CEE25FB5 34330973 93E091CD 18B2578C A77AE09F 4B7578B5 A68A0511 
+  C01B0886 BCD71095 D049B571 4C46C582 39447886 3D9A8FC8 915954B7 2381A6E7 
+  73C9474D 87A4197A C7505C25 0BF2342E D8461BB3 81BC9193 75A01EA5 F4957DB8 
+  A61ADFE6 9579E569 83A4E222 0EED4DDF 959D7BB1 73BBDB51 D3956E85 F008DF4B 
+  E732D89F 4B8E5EAE 1E4F94BB 8895239F F7FC90ED 8761F046 66FFFBB1 A422A320 
+  82355F16 62F7DDF8 668F71CA 1AB10637 893139C2 45F378A8 53701C2B ED2AE575 
+  9E5912FB 13E2685B 67CF7CFE 0818941F 6C16ECEF 542F279A 6FB163B7 727DE203 
+  4890C901 B693FCFA BF934C24 A243C3BC 8B5FB59D 82CC90EC 2C3997E4
+        quit
+crypto pki certificate chain VPN
+ certificate 05
+  3082022A 30820112 A0030201 02020105 300D0609 2A864886 F70D0101 05050030 
+  0D310B30 09060355 04031302 4341301E 170D3234 30323036 31343331 30315A17 
+  0D323530 32303531 34333130 315A301B 31193017 06092A86 4886F70D 01090216 
+  0A523135 2E4D534B 2E727530 5C300D06 092A8648 86F70D01 01010500 034B0030 
+  48024100 C7032B6D 2CF1B953 AC2F5E0B 881F6C79 6379AAA5 DED1D7CB 76D07E34 
+  11B8DE72 53D02099 C64B9336 CC243A44 7AA502AC 931565EC 6A81F8A7 4D2599AB 
+  03E08A3D 02030100 01A34F30 4D300B06 03551D0F 04040302 05A0301F 0603551D 
+  23041830 168014ED 4370F9D8 7D014330 9A3039FA 90A9847C 560E2130 1D060355 
+  1D0E0416 0414C875 82505CB0 D8E6C385 20589EDC 0DB02CFB D25A300D 06092A86 
+  4886F70D 01010505 00038201 01004139 B9E18249 C7120FB3 B95A2663 31B65355 
+  330DD43D 16D4293E 0BFDEBF6 BB0D8AF1 0E860BF1 0BA8F61D 9F203977 1AFAC244 
+  70B7A1CD 02E310EE 866A3A4D 6607AED2 265DBC65 4D57F132 C5F9ADFD 22B4AF60 
+  D56DBCE7 86921AD1 96C52408 10A73805 60BE576D 1011BC0F B6FC0B14 B6911E23 
+  BBF31360 E2878F48 E7708B4E C1C69084 06012083 0E88BC03 FFBE4927 EFDB9B24 
+  26DCAFAE 2ECEB696 BED7A995 B1A40427 E36FF9B2 0609BC9E C98B0AA2 28FA9A3D 
+  B91378B4 E149D875 D96ED854 7B4DEEA6 8FE255BD 2F7ABC16 172BB06C 66857DD7 
+  DF00A698 45A6245E 007BEABF 6D67F31C D3AF8CCD 12FCBDED 9545B035 7AED334D 
+  DD3C3280 CF59EA21 EB1FE3FE 4B27
+        quit
+ certificate ca 01
+  308202F8 308201E0 A0030201 02020101 300D0609 2A864886 F70D0101 04050030 
+  0D310B30 09060355 04031302 4341301E 170D3234 30323036 31343134 34365A17 
+  0D323730 32303531 34313434 365A300D 310B3009 06035504 03130243 41308201 
+  22300D06 092A8648 86F70D01 01010500 0382010F 00308201 0A028201 0100C4CE 
+  FCC34D65 C994A9C6 328895EA 9FE5D7E1 1BFC6AD3 51889CBF EAE197C6 6293A962 
+  AC1113F4 2292657A DD4F49FF D04F4ABE A7F91E27 CA5C658A 90F51C97 F5C9411C 
+  802E9524 303A9D33 98278EA9 E92C0E03 6AA46DC9 29083B5A 1A7841D1 4EEAFF6A 
+  E1523199 F78B912B 5F63103E 7A13E375 4511977D 0A2224A2 9895192E C09DDC0B 
+  74F4187A 146AC42F 57879DD0 1B6AF3B2 B7B1AC55 492082A3 240C5194 2086F8EA 
+  8DC55221 0BF8AC7D 2BAB2E0E F3B8DD34 18F9CF17 C472CDF6 111DD2CE 6559E282 
+  1513DFFD 772839CF AADCBB8F F70C6C83 6C3CB03A 26001A0C AF23DE28 7F268D6B 
+  40EBB464 1F685B5F 7425E62D A60FFAB6 477BA652 EB6245EE FA432CAF A4090203 
+  010001A3 63306130 0F060355 1D130101 FF040530 030101FF 300E0603 551D0F01 
+  01FF0404 03020186 301F0603 551D2304 18301680 14ED4370 F9D87D01 43309A30 
+  39FA90A9 847C560E 21301D06 03551D0E 04160414 ED4370F9 D87D0143 309A3039 
+  FA90A984 7C560E21 300D0609 2A864886 F70D0101 04050003 82010100 299E2B09 
+  1A1CBE86 CEE25FB5 34330973 93E091CD 18B2578C A77AE09F 4B7578B5 A68A0511 
+  C01B0886 BCD71095 D049B571 4C46C582 39447886 3D9A8FC8 915954B7 2381A6E7 
+  73C9474D 87A4197A C7505C25 0BF2342E D8461BB3 81BC9193 75A01EA5 F4957DB8 
+  A61ADFE6 9579E569 83A4E222 0EED4DDF 959D7BB1 73BBDB51 D3956E85 F008DF4B 
+  E732D89F 4B8E5EAE 1E4F94BB 8895239F F7FC90ED 8761F046 66FFFBB1 A422A320 
+  82355F16 62F7DDF8 668F71CA 1AB10637 893139C2 45F378A8 53701C2B ED2AE575 
+  9E5912FB 13E2685B 67CF7CFE 0818941F 6C16ECEF 542F279A 6FB163B7 727DE203 
+  4890C901 B693FCFA BF934C24 A243C3BC 8B5FB59D 82CC90EC 2C3997E4
+        quit
 !
 redundancy
 !
 !
-! 
+ip ssh version 2
+!         
+!
+crypto ikev2 proposal PROSPB 
+ encryption aes-cbc-128
+ integrity md5
+ group 2
+!
+crypto ikev2 policy IKEV2 
+ proposal PROSPB
+!
+!
+crypto ikev2 profile PROFILE1
+ match address local interface Loopback100
+ match identity remote address 0.0.0.0 
+ authentication remote rsa-sig
+ authentication local rsa-sig
+ pki trustpoint VPN
 !
 !
 !
+crypto ipsec transform-set IPSEC_TS esp-aes esp-md5-hmac 
+ mode tunnel
+crypto ipsec transform-set DMVPN esp-aes esp-md5-hmac 
+ mode transport
 !
+crypto ipsec profile DMVPN_PROF
+ set transform-set DMVPN 
+ set ikev2-profile PROFILE1
+!
+crypto ipsec profile IPSEC_PROF
+ set transform-set IPSEC_TS 
+ set ikev2-profile PROFILE1
 !
 !
 !
@@ -65,39 +179,84 @@ redundancy
 interface Loopback0
  description == FOR MGMT ==
  ip address 10.10.0.4 255.255.255.255
- ip ospf 1 area 0
+ ip nat inside
+ ip virtual-reassembly in
  ipv6 address FE80::4 link-local
  ipv6 address 2001:AAAA::4/128
+ ipv6 address 2001:AAAA:10::10/64
  ipv6 enable
- ipv6 ospf 1 area 0
- ipv6 ospf network point-to-point
+ ospfv3 1 network point-to-point
+ ospfv3 1 ipv4 area 0
+ ospfv3 1 ipv6 area 0
+ ospfv3 1 ipv6 network point-to-point
+!
+interface Loopback10
+ ip address 10.10.10.10 255.255.255.255
+ ip nat outside
+ ip virtual-reassembly in
+!
+interface Loopback70
+ ip address 10.10.10.70 255.255.255.255
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Loopback100
+ ip address 10.10.10.100 255.255.255.255
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Tunnel1020
+ ip address 192.168.10.1 255.255.255.0
+ ip mtu 1400
+ ip tcp adjust-mss 1360
+ tunnel source Loopback100
+ tunnel destination 10.20.20.6
+ tunnel protection ipsec profile IPSEC_PROF
+!
+interface Tunnel1030
+ ip address 192.168.30.1 255.255.255.0
+ no ip redirects
+ ip mtu 1400
+ ip nhrp map multicast dynamic
+ ip nhrp network-id 100
+ ip nhrp holdtime 300
+ ip nhrp redirect
+ ip tcp adjust-mss 1360
+ tunnel source Loopback100
+ tunnel mode gre multipoint
+ tunnel protection ipsec profile DMVPN_PROF
 !
 interface Ethernet0/0
  description == link to R13 == 
  ip address 10.10.0.113 255.255.255.254
- ip ospf network point-to-point
- ip ospf 1 area 0
+ ip nat inside
+ ip virtual-reassembly in
  ipv6 address FE80::71 link-local
  ipv6 address 2001:AAAA::71/127
  ipv6 enable
- ipv6 ospf 1 area 0
- ipv6 ospf network point-to-point
+ ospfv3 1 network point-to-point
+ ospfv3 1 ipv4 area 0
+ ospfv3 1 ipv6 area 0
+ ospfv3 1 ipv6 network point-to-point
 !
 interface Ethernet0/1
  description == link to R12 == 
  ip address 10.10.0.107 255.255.255.254
- ip ospf network point-to-point
- ip ospf 1 area 0
+ ip nat inside
+ ip virtual-reassembly in
  ipv6 address FE80::6B link-local
  ipv6 address 2001:AAAA::6B/127
  ipv6 enable
- ipv6 ospf 1 area 0
- ipv6 ospf network point-to-point
+ ospfv3 1 network point-to-point
+ ospfv3 1 ipv4 area 0
+ ospfv3 1 ipv6 area 0
+ ospfv3 1 ipv6 network point-to-point
 !
 interface Ethernet0/2
  description == link to R21 Lamas == 
  ip address 100.100.11.1 255.255.255.252
- ip ospf network point-to-point
+ ip nat outside
+ ip virtual-reassembly in
  ipv6 address FE80::AE link-local
  ipv6 address 2001:AAAA:AAEE::1/64
  ipv6 enable
@@ -105,24 +264,28 @@ interface Ethernet0/2
 interface Ethernet0/3
  description == link to R20 == 
  ip address 10.10.0.118 255.255.255.254
- ip ospf network point-to-point
- ip ospf 1 area 0
+ ip nat inside
+ ip virtual-reassembly in
  ipv6 address FE80::76 link-local
  ipv6 address 2001:AAAA::76/127
  ipv6 enable
- ipv6 ospf 1 area 0
- ipv6 ospf network point-to-point
+ ospfv3 1 network point-to-point
+ ospfv3 1 ipv4 area 0
+ ospfv3 1 ipv6 area 0
+ ospfv3 1 ipv6 network point-to-point
 !
 interface Ethernet1/0
  description == link to R14 == 
  ip address 10.10.0.125 255.255.255.254
- ip ospf network point-to-point
- ip ospf 1 area 0
+ ip nat inside
+ ip virtual-reassembly in
  ipv6 address FE80::7D link-local
  ipv6 address 2001:AAAA::7D/127
  ipv6 enable
- ipv6 ospf 1 area 0
- ipv6 ospf network point-to-point
+ ospfv3 1 network point-to-point
+ ospfv3 1 ipv4 area 0
+ ospfv3 1 ipv6 area 0
+ ospfv3 1 ipv6 network point-to-point
 !
 interface Ethernet1/1
  no ip address
@@ -135,16 +298,32 @@ interface Ethernet1/2
 interface Ethernet1/3
  no ip address
  shutdown
-!
-router ospf 1
+!         
+router ospfv3 1
  router-id 10.10.0.4
- passive-interface default
- no passive-interface Ethernet0/0
- no passive-interface Ethernet0/1
- no passive-interface Ethernet0/3
- no passive-interface Ethernet1/0
- no passive-interface Loopback0
- default-information originate
+ !
+ address-family ipv4 unicast
+  passive-interface default
+  no passive-interface Ethernet0/0
+  no passive-interface Ethernet0/1
+  no passive-interface Ethernet0/3
+  no passive-interface Ethernet1/0
+  no passive-interface Loopback0
+  default-information originate
+  distance ospf inter-area 170 
+  router-id 10.10.0.4
+ exit-address-family
+ !
+ address-family ipv6 unicast
+  passive-interface default
+  no passive-interface Ethernet0/0
+  no passive-interface Ethernet0/1
+  no passive-interface Ethernet0/3
+  no passive-interface Ethernet1/0
+  no passive-interface Loopback0
+  default-information originate
+  router-id 10.10.0.4
+ exit-address-family
 !
 router bgp 1001
  bgp router-id 10.10.0.4
@@ -159,50 +338,78 @@ router bgp 1001
  neighbor 100.100.11.2 description == BGP to ISP Lamas
  !
  address-family ipv4
-  network 10.10.0.0 mask 255.255.0.0
-  network 10.10.11.0 mask 255.255.255.252
+  network 10.10.10.5 mask 255.255.255.255
+  network 10.10.10.10 mask 255.255.255.255
+  network 10.10.10.20 mask 255.255.255.255
+  network 10.10.10.70 mask 255.255.255.255
+  network 10.10.10.100 mask 255.255.255.255
   neighbor 10.10.0.124 activate
   neighbor 10.10.0.124 next-hop-self
-  neighbor 10.10.0.124 soft-reconfiguration inbound
   no neighbor 2001:AAAA::7C activate
   no neighbor 2001:AAAA:AAEE::2 activate
   neighbor 100.100.11.2 activate
+  neighbor 100.100.11.2 next-hop-self
   neighbor 100.100.11.2 route-map LP150 in
+  neighbor 100.100.11.2 route-map Lamas-out out
  exit-address-family
  !
  address-family ipv6
   network 2001:AAAA::/64
-  network 2001:AAAA:AAEE::/64
   neighbor 2001:AAAA::7C activate
   neighbor 2001:AAAA::7C next-hop-self
-  neighbor 2001:AAAA::7C soft-reconfiguration inbound
   neighbor 2001:AAAA:AAEE::2 activate
+  neighbor 2001:AAAA:AAEE::2 next-hop-self
   neighbor 2001:AAAA:AAEE::2 route-map LP150 in
+  neighbor 2001:AAAA:AAEE::2 route-map Lamas-out out
  exit-address-family
 !
 ip forward-protocol nd
 !
-!
-no ip http server
+ip as-path access-list 1 permit ^$
+ip as-path access-list 1 deny .*
+!         
+ip http server
 no ip http secure-server
-ip route 0.0.0.0 0.0.0.0 100.100.11.2 name "def to Triada"
+ip nat pool USER1 10.10.10.10 10.10.10.10 netmask 255.255.255.0
+ip nat pool USER7 10.10.10.70 10.10.10.70 netmask 255.255.255.0
+ip nat pool MSK 10.10.10.100 10.10.10.100 netmask 255.255.255.0
+ip nat inside source list 1 interface Loopback10 overload
+ip nat inside source list 7 interface Loopback70 overload
+ip nat inside source list 10 interface Loopback100 overload
+ip nat inside source static 10.10.0.5 10.10.10.5
+ip nat inside source static 10.10.0.6 10.10.10.20
 ip route 10.10.0.0 255.255.0.0 Null0
+ip route 10.10.10.5 255.255.255.255 Null0
+ip route 10.10.10.20 255.255.255.255 Null0
+ip route 172.10.30.0 255.255.255.0 192.168.30.30
+ip route 172.10.31.0 255.255.255.0 192.168.30.30
+ip route 172.10.35.0 255.255.255.0 192.168.30.35
+ip route 172.10.80.0 255.255.255.0 Tunnel1020
+ip route 172.10.100.0 255.255.255.0 Tunnel1020
+!
+ip access-list extended MSK_to_SPB
+ permit ip 172.10.10.0 0.0.0.255 172.10.80.0 0.0.0.255
+ permit ip 172.10.10.0 0.0.0.255 172.10.100.0 0.0.0.255
+ permit ip 172.10.70.0 0.0.0.255 172.10.80.0 0.0.0.255
+ permit ip 172.10.70.0 0.0.0.255 172.10.100.0 0.0.0.255
 !
 !
 ip prefix-list DENY_OSPF-101 seq 5 deny 10.10.0.5/32
 ip prefix-list DENY_OSPF-101 seq 10 deny 10.10.0.116/31
 ip prefix-list DENY_OSPF-101 seq 15 permit 0.0.0.0/0 le 32
+access-list 1 permit 172.10.10.0 0.0.0.255
+access-list 7 permit 172.10.70.0 0.0.0.255
+access-list 10 permit 10.10.0.0 0.0.255.255
+access-list 1500 deny   any
+access-list 1501 permit 10.10.0.1
+access-list 1501 permit 10.10.0.2
+access-list 1501 deny   any
 ipv6 route 2001:AAAA::/64 Null0
-ipv6 router ospf 1
- router-id 10.10.0.4
- default-information originate
- passive-interface default
- no passive-interface Ethernet0/0
- no passive-interface Ethernet0/1
- no passive-interface Ethernet0/3
- no passive-interface Ethernet1/0
- no passive-interface Loopback0
 !
+!
+ipv6 prefix-list NAT6 seq 5 permit 2001:AAAA:10::/64
+route-map Lamas-out permit 10
+ match as-path 1
 !
 route-map LP150 permit 10
  set local-preference 150
@@ -230,5 +437,11 @@ line vty 0 4
  login
  transport input all
 !         
+ntp source Loopback0
+ntp access-group peer 1501
+ntp access-group serve-only 1500
+ntp update-calendar
+ntp server 10.10.0.1
+ntp server 10.10.0.2
 !
 end
